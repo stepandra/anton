@@ -16,7 +16,9 @@ import (
 	"github.com/uptrace/go-clickhouse/chmigrate"
 
 	"github.com/tonindexer/anton/internal/core"
+	"github.com/tonindexer/anton/internal/core/filter"
 	"github.com/tonindexer/anton/internal/core/repository"
+	"github.com/tonindexer/anton/internal/core/repository/block"
 
 	"github.com/tonindexer/anton/migrations/chmigrations"
 	"github.com/tonindexer/anton/migrations/pgmigrations"
@@ -465,6 +467,115 @@ var Command = &cli.Command{
 					}
 					lastTxLT = nextTxLT
 				}
+			},
+		},
+		{
+			Name:  "fillMissedClickHouseData",
+			Usage: "Transfers missed blocks from PostgreSQL to ClickHouse",
+			Action: func(c *cli.Context) error {
+				chURL := env.GetString("DB_CH_URL", "")
+				pgURL := env.GetString("DB_PG_URL", "")
+
+				conn, err := repository.ConnectDB(c.Context, chURL, pgURL)
+				if err != nil {
+					return errors.Wrap(err, "cannot connect to the databases")
+				}
+				defer conn.Close()
+
+				blockRepo := block.NewRepository(conn.CH, conn.PG)
+
+				blockIds, err := blockRepo.GetMissedMasterBlocks(c.Context)
+				if err != nil {
+					return errors.Wrap(err, "get missed masterchain blocks")
+				}
+				if len(blockIds) == 0 {
+					return errors.Wrap(core.ErrNotFound, "could not find any missed blocks")
+				}
+
+				m, err := blockRepo.GetLastMasterBlock(c.Context)
+				if err != nil {
+					return errors.Wrap(err, "get last master block")
+				}
+
+				for _, b := range blockIds {
+					res, err := blockRepo.FilterBlocks(c.Context, &filter.BlocksReq{
+						Workchain:               &m.Workchain,
+						Shard:                   &m.Shard,
+						SeqNo:                   &b,
+						WithShards:              true,
+						WithAccountStates:       true,
+						WithTransactions:        true,
+						WithTransactionMessages: true,
+					})
+					if err != nil {
+						return errors.Wrapf(err, "filter blocks on (%d, %x, %d)", m.Workchain, m.Shard, m.SeqNo)
+					}
+
+					var (
+						masterBlocks []*core.Block
+						shardBlocks  []*core.Block
+						transactions []*core.Transaction
+						messages     []*core.Message
+						accounts     []*core.AccountState
+					)
+
+					for _, row := range res.Rows {
+						masterBlocks = append(masterBlocks, row)
+
+						shardBlocks = append(shardBlocks, row.Shards...)
+
+						accounts = append(accounts, row.Accounts...)
+						transactions = append(transactions, row.Transactions...)
+						for _, tx := range row.Transactions {
+							messages = append(messages, tx.InMsg)
+							messages = append(messages, tx.OutMsg...)
+						}
+
+						for _, shard := range row.Shards {
+							accounts = append(accounts, shard.Accounts...)
+							transactions = append(transactions, shard.Transactions...)
+							for _, tx := range shard.Transactions {
+								transactions = append(transactions, tx)
+								messages = append(messages, tx.InMsg)
+								messages = append(messages, tx.OutMsg...)
+							}
+						}
+					}
+
+					log.Info().
+						Int32("workchain", m.Workchain).
+						Int64("shard", m.Shard).
+						Uint32("seq_no", b).
+						Int("master_blocks_len", len(masterBlocks)).
+						Int("shard_blocks_len", len(shardBlocks)).
+						Int("transactions_len", len(transactions)).
+						Int("messages_len", len(messages)).
+						Int("account_states_len", len(accounts)).
+						Msg("insert new missed block")
+
+					_, err = conn.CH.NewInsert().Model(&accounts).Exec(c.Context)
+					if err != nil {
+						return err
+					}
+					_, err = conn.CH.NewInsert().Model(&messages).Exec(c.Context)
+					if err != nil {
+						return err
+					}
+					_, err = conn.CH.NewInsert().Model(&transactions).Exec(c.Context)
+					if err != nil {
+						return err
+					}
+					_, err = conn.CH.NewInsert().Model(&shardBlocks).Exec(c.Context)
+					if err != nil {
+						return err
+					}
+					_, err = conn.CH.NewInsert().Model(&masterBlocks).Exec(c.Context)
+					if err != nil {
+						return err
+					}
+				}
+
+				return nil
 			},
 		},
 	},
