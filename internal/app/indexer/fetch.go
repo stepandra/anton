@@ -183,16 +183,16 @@ func (s *Service) fetchMastersConcurrent(fromBlock uint32, results chan<- *core.
 		workers = 1
 	}
 
-	ch := make(chan *core.Block, s.Workers)
+	ch := make(chan *core.Block, workers)
 	defer close(ch)
 
-	for i := 0; i < s.Workers; i++ {
+	for i := 0; i < workers; i++ {
 		go func(seq uint32) {
 			ch <- s.fetchMaster(seq)
 		}(fromBlock + uint32(i))
 	}
 
-	for i := 0; i < s.Workers; i++ {
+	for i := 0; i < workers; i++ {
 		b := <-ch
 		blocks = append(blocks, b)
 		fromBlock, blocks = publishProcessedBlocks(fromBlock, blocks, results)
