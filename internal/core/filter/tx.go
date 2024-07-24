@@ -32,7 +32,7 @@ type TransactionsReq struct {
 }
 
 type TransactionsRes struct {
-	Total int                 `json:"total"`
+	Total int                 `json:"total,omitempty"`
 	Rows  []*core.Transaction `json:"results"`
 }
 
