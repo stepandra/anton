@@ -497,11 +497,11 @@ var Command = &cli.Command{
 					return errors.Wrap(err, "get last master block")
 				}
 
-				for _, b := range blockIds {
+				for i := range blockIds {
 					res, err := blockRepo.FilterBlocks(c.Context, &filter.BlocksReq{
 						Workchain:               &m.Workchain,
 						Shard:                   &m.Shard,
-						SeqNo:                   &b,
+						SeqNo:                   &blockIds[i],
 						WithShards:              true,
 						WithAccountStates:       true,
 						WithTransactions:        true,
@@ -549,7 +549,7 @@ var Command = &cli.Command{
 					log.Info().
 						Int32("workchain", m.Workchain).
 						Int64("shard", m.Shard).
-						Uint32("seq_no", b).
+						Uint32("seq_no", blockIds[i]).
 						Int("master_blocks_len", len(masterBlocks)).
 						Int("shard_blocks_len", len(shardBlocks)).
 						Int("transactions_len", len(transactions)).
