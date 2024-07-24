@@ -527,7 +527,9 @@ var Command = &cli.Command{
 						accounts = append(accounts, row.Accounts...)
 						transactions = append(transactions, row.Transactions...)
 						for _, tx := range row.Transactions {
-							messages = append(messages, tx.InMsg)
+							if tx.InMsg != nil {
+								messages = append(messages, tx.InMsg)
+							}
 							messages = append(messages, tx.OutMsg...)
 						}
 
@@ -536,7 +538,9 @@ var Command = &cli.Command{
 							transactions = append(transactions, shard.Transactions...)
 							for _, tx := range shard.Transactions {
 								transactions = append(transactions, tx)
-								messages = append(messages, tx.InMsg)
+								if tx.InMsg != nil {
+									messages = append(messages, tx.InMsg)
+								}
 								messages = append(messages, tx.OutMsg...)
 							}
 						}
