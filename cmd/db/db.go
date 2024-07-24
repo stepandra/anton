@@ -553,25 +553,30 @@ var Command = &cli.Command{
 						Int("account_states_len", len(accounts)).
 						Msg("insert new missed block")
 
-					_, err = conn.CH.NewInsert().Model(&accounts).Exec(c.Context)
-					if err != nil {
-						return err
+					if len(accounts) > 0 {
+						if _, err := conn.CH.NewInsert().Model(&accounts).Exec(c.Context); err != nil {
+							return err
+						}
 					}
-					_, err = conn.CH.NewInsert().Model(&messages).Exec(c.Context)
-					if err != nil {
-						return err
+					if len(messages) > 0 {
+						if _, err := conn.CH.NewInsert().Model(&messages).Exec(c.Context); err != nil {
+							return err
+						}
 					}
-					_, err = conn.CH.NewInsert().Model(&transactions).Exec(c.Context)
-					if err != nil {
-						return err
+					if len(transactions) > 0 {
+						if _, err := conn.CH.NewInsert().Model(&transactions).Exec(c.Context); err != nil {
+							return err
+						}
 					}
-					_, err = conn.CH.NewInsert().Model(&shardBlocks).Exec(c.Context)
-					if err != nil {
-						return err
+					if len(shardBlocks) > 0 {
+						if _, err := conn.CH.NewInsert().Model(&shardBlocks).Exec(c.Context); err != nil {
+							return err
+						}
 					}
-					_, err = conn.CH.NewInsert().Model(&masterBlocks).Exec(c.Context)
-					if err != nil {
-						return err
+					if len(masterBlocks) > 0 {
+						if _, err := conn.CH.NewInsert().Model(&masterBlocks).Exec(c.Context); err != nil {
+							return err
+						}
 					}
 				}
 
