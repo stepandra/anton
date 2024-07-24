@@ -84,7 +84,7 @@ func flattenStateIDs(ids []*core.AccountStateID) (ret [][]any) {
 	return
 }
 
-func (r *Repository) filterAccountStates(ctx context.Context, f *filter.AccountsReq, total int) (ret []*core.AccountState, err error) { //nolint:gocyclo,gocognit // that's ok
+func (r *Repository) filterAccountStates(ctx context.Context, f *filter.AccountsReq) (ret []*core.AccountState, err error) { //nolint:gocyclo,gocognit // that's ok
 	var (
 		q                   *bun.SelectQuery
 		prefix, statesTable string
@@ -153,14 +153,14 @@ func (r *Repository) filterAccountStates(ctx context.Context, f *filter.Accounts
 		q = q.Order(statesTable + orderBy + " " + strings.ToUpper(f.Order))
 	}
 
-	if total < 100000 && f.LatestState {
-		// firstly, select all latest states, then apply limit
-		// https://ottertune.com/blog/how-to-fix-slow-postgresql-queries
-		rawQuery := fmt.Sprintf("WITH q AS MATERIALIZED (?) SELECT * FROM q LIMIT %d", f.Limit)
-		err = r.pg.NewRaw(rawQuery, q).Scan(ctx, &ret)
-	} else {
-		err = q.Limit(f.Limit).Scan(ctx)
-	}
+	// if total < 100000 && f.LatestState {
+	// 	// firstly, select all latest states, then apply limit
+	// 	// https://ottertune.com/blog/how-to-fix-slow-postgresql-queries
+	// 	rawQuery := fmt.Sprintf("WITH q AS MATERIALIZED (?) SELECT * FROM q LIMIT %d", f.Limit)
+	// 	err = r.pg.NewRaw(rawQuery, q).Scan(ctx, &ret)
+	// } else {
+	err = q.Limit(f.Limit).Scan(ctx)
+	// }
 
 	if f.LatestState {
 		for _, a := range latest {
@@ -301,7 +301,7 @@ func (r *Repository) FilterAccounts(ctx context.Context, f *filter.AccountsReq) 
 		f.Limit = 3
 	}
 
-	if !f.NoCount {
+	if f.Count {
 		res.Total, err = r.countAccountStates(ctx, f)
 		if err != nil && !errors.Is(err, core.ErrNotImplemented) {
 			return res, errors.Wrap(err, "count account states")
@@ -311,7 +311,7 @@ func (r *Repository) FilterAccounts(ctx context.Context, f *filter.AccountsReq) 
 		}
 	}
 
-	res.Rows, err = r.filterAccountStates(ctx, f, res.Total)
+	res.Rows, err = r.filterAccountStates(ctx, f)
 	if err != nil {
 		return res, err
 	}

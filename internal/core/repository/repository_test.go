@@ -207,6 +207,7 @@ func TestRelations(t *testing.T) {
 		res, err := accountRepo.FilterAccounts(ctx, &filter.AccountsReq{
 			Addresses:   addresses,
 			LatestState: true,
+			Count:       true,
 		})
 		require.Nil(t, err)
 		require.Equal(t, 1, res.Total)
@@ -216,6 +217,7 @@ func TestRelations(t *testing.T) {
 	t.Run("get messages with payloads", func(t *testing.T) {
 		res, err := msgRepo.FilterMessages(ctx, &filter.MessagesReq{
 			DstAddresses: addresses,
+			Count:        true,
 		})
 		require.Nil(t, err)
 		require.Equal(t, 1, res.Total)
@@ -232,6 +234,7 @@ func TestRelations(t *testing.T) {
 			Addresses:        addresses,
 			WithAccountState: true,
 			WithMessages:     true,
+			Count:            true,
 		})
 		require.Nil(t, err)
 		require.Equal(t, 1, res.Total)
@@ -250,6 +253,7 @@ func TestRelations(t *testing.T) {
 			WithTransactions:            true,
 			WithTransactionAccountState: true,
 			WithTransactionMessages:     true,
+			Count:                       true,
 		})
 		require.Nil(t, err)
 		require.Equal(t, 1, res.Total)

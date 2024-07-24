@@ -115,7 +115,7 @@ func (r *Repository) FilterTransactions(ctx context.Context, req *filter.Transac
 	case len(req.Hash) > 0:
 		res.Total = len(res.Rows)
 
-	default:
+	case req.Count:
 		res.Total, err = r.countTx(ctx, req)
 		if err != nil {
 			return res, err

@@ -28,6 +28,7 @@ type TransactionsReq struct {
 
 	AfterTxLT *uint64 `form:"after"`
 	Limit     int     `form:"limit"`
+	Count     bool    `form:"count"`
 }
 
 type TransactionsRes struct {

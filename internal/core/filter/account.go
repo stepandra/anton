@@ -41,16 +41,15 @@ type AccountsReq struct {
 
 	ExcludeColumn []string // TODO: support relations
 
-	NoCount bool
-
 	Order string `form:"order"` // ASC, DESC
 
 	AfterTxLT *uint64 `form:"after"`
 	Limit     int     `form:"limit"`
+	Count     bool    `form:"count"`
 }
 
 type AccountsRes struct {
-	Total int                  `json:"total"`
+	Total int                  `json:"total,omitempty"`
 	Rows  []*core.AccountState `json:"results"`
 }
 

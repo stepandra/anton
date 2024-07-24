@@ -136,7 +136,9 @@ func (s *Service) fetchSkippedAccounts(ctx context.Context, req *filter.Accounts
 			return errors.Wrap(err, "get address label")
 		}
 
-		res.Total += 1
+		if req.Count {
+			res.Total += 1
+		}
 		res.Rows = append(res.Rows, parsed)
 	}
 

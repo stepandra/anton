@@ -28,7 +28,6 @@ func (s *Service) getLastSeenAccountState(ctx context.Context, a addr.Address, l
 		Addresses:    []*addr.Address{&a},
 		Order:        "DESC",
 		AfterTxLT:    &lastLT,
-		NoCount:      true,
 		Limit:        1,
 	}
 	accountRes, err := s.AccountRepo.FilterAccounts(ctx, &accountReq)

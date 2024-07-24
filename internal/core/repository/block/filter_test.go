@@ -82,7 +82,7 @@ func TestRepository_FilterBlocks(t *testing.T) {
 			// Shard:     &shard.Shard,
 			// SeqNo:     &shard.SeqNo,
 
-			AfterSeqNo: &nextSeqNo, Order: "DESC", Limit: 1,
+			AfterSeqNo: &nextSeqNo, Order: "DESC", Limit: 1, Count: true,
 		})
 		require.Nil(t, err)
 		require.Equal(t, 100, res.Total)
@@ -94,7 +94,7 @@ func TestRepository_FilterBlocks(t *testing.T) {
 			Workchain: &shard.Workchain,
 			SeqNo:     &shard.SeqNo,
 
-			AfterSeqNo: &nextSeqNo, Order: "DESC", Limit: 1,
+			AfterSeqNo: &nextSeqNo, Order: "DESC", Limit: 1, Count: true,
 		})
 		require.Nil(t, err)
 		require.Equal(t, 1, res.Total)
@@ -107,7 +107,7 @@ func TestRepository_FilterBlocks(t *testing.T) {
 
 			WithShards: true,
 
-			AfterSeqNo: &nextSeqNo, Order: "DESC", Limit: 1,
+			AfterSeqNo: &nextSeqNo, Order: "DESC", Limit: 1, Count: true,
 		})
 		require.Nil(t, err)
 		require.Equal(t, 1, res.Total)
