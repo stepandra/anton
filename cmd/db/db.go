@@ -677,6 +677,7 @@ var Command = &cli.Command{
 
 				latestLT := ctx.Uint64("start-from")
 				batch := ctx.Int("limit")
+				totalChecked := 0
 			_main:
 				for {
 					var states []*core.AccountState
@@ -731,6 +732,11 @@ var Command = &cli.Command{
 						if s.LastTxLT > latestLT && s.LastTxLT != maxTxLt {
 							latestLT = s.LastTxLT
 						}
+					}
+
+					totalChecked += len(states)
+					if totalChecked%500000 == 0 {
+						log.Info().Int("total_checked", totalChecked).Uint64("last_tx_lt", latestLT).Msg("checkpoint")
 					}
 				}
 			},
