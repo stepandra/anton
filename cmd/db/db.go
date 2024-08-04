@@ -11,6 +11,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 	"github.com/urfave/cli/v2"
+	"github.com/xssnick/tonutils-go/liteclient"
+	"github.com/xssnick/tonutils-go/ton"
 
 	"github.com/uptrace/bun/migrate"
 	"github.com/uptrace/go-clickhouse/chmigrate"
@@ -585,6 +587,148 @@ var Command = &cli.Command{
 				}
 
 				return nil
+			},
+		},
+		{
+			Name:  "fillMissedRawAccountStates",
+			Usage: "Fetches missed raw account states code and data",
+			Flags: []cli.Flag{
+				&cli.IntFlag{
+					Name:  "limit",
+					Value: 10000,
+					Usage: "batch size for update",
+				},
+				&cli.Uint64Flag{
+					Name:  "start-from",
+					Value: 0,
+					Usage: "last tx lt to start from",
+				},
+			},
+			Action: func(ctx *cli.Context) error {
+				chURL := env.GetString("DB_CH_URL", "")
+				pgURL := env.GetString("DB_PG_URL", "")
+
+				conn, err := repository.ConnectDB(ctx.Context, chURL, pgURL)
+				if err != nil {
+					return errors.Wrap(err, "cannot connect to the databases")
+				}
+				defer conn.Close()
+
+				client := liteclient.NewConnectionPool()
+				api := ton.NewAPIClient(client, ton.ProofCheckPolicyUnsafe).WithRetry()
+				for _, addr := range strings.Split(env.GetString("LITESERVERS", ""), ",") {
+					split := strings.Split(addr, "|")
+					if len(split) != 2 {
+						return fmt.Errorf("wrong server address format '%s'", addr)
+					}
+					host, key := split[0], split[1]
+					if err := client.AddConnection(ctx.Context, host, key); err != nil {
+						return errors.Wrapf(err, "cannot add connection with %s host and %s key", host, key)
+					}
+				}
+
+				fetchAccountCodeData := func(s *core.AccountState) error {
+					block := core.Block{Workchain: s.Workchain, Shard: s.Shard, SeqNo: s.BlockSeqNo}
+
+					err := conn.PG.NewSelect().Model(&block).
+						Where("workchain = ?workchain").
+						Where("shard = ?shard").
+						Where("seq_no = ?seq_no").
+						Scan(ctx.Context)
+					if err != nil {
+						return errors.Wrap(err, "select block")
+					}
+
+					rawBlock := ton.BlockIDExt{
+						Workchain: block.Workchain, Shard: block.Shard, SeqNo: block.SeqNo,
+						RootHash: block.RootHash, FileHash: block.FileHash,
+					}
+
+					acc, err := api.GetAccount(ctx.Context, &rawBlock, s.Address.MustToTonutils())
+					if err != nil {
+						return errors.Wrap(err, "get raw account")
+					}
+
+					if acc.Code == nil {
+						return fmt.Errorf("account state has no code")
+					}
+					if acc.Data == nil {
+						return fmt.Errorf("account state has no data")
+					}
+
+					code := core.AccountStateCode{
+						CodeHash: acc.Code.Hash(),
+						Code:     acc.Code.ToBOC(),
+					}
+					if _, err := conn.CH.NewInsert().Model(&code).Exec(ctx.Context); err != nil {
+						return errors.Wrapf(err, "write code to key-value store")
+					}
+
+					data := core.AccountStateData{
+						DataHash: acc.Data.Hash(),
+						Data:     acc.Data.ToBOC(),
+					}
+					if _, err := conn.CH.NewInsert().Model(&data).Exec(ctx.Context); err != nil {
+						return errors.Wrapf(err, "write data to key-value store")
+					}
+
+					return nil
+				}
+
+				latestLT := ctx.Uint64("start-from")
+				batch := ctx.Int("limit")
+			_main:
+				for {
+					var states []*core.AccountState
+
+					err := conn.PG.NewSelect().Model(&states).
+						Where("last_tx_lt > ?", latestLT).
+						Order("ASC").
+						Limit(batch).
+						Scan(ctx.Context)
+					if err != nil {
+						return errors.Wrapf(err, "scan account states from %d", latestLT)
+					}
+					if len(states) == 0 {
+						log.Info().Msg("no states left")
+						return nil
+					}
+
+					var maxTxLt uint64
+					for _, s := range states {
+						if s.LastTxLT > maxTxLt {
+							maxTxLt = s.LastTxLT
+						}
+
+						var code core.AccountStateCode
+						err := conn.CH.NewSelect().Model(&code).Where("code_hash = ?", s.CodeHash).Scan(ctx.Context)
+						if err != nil {
+							log.Warn().Str("address", s.Address.String()).Uint64("last_tx_lt", s.LastTxLT).Msg("missed account code")
+							if err := fetchAccountCodeData(s); err != nil {
+								log.Error().Err(err).Str("address", s.Address.String()).Uint64("last_tx_lt", s.LastTxLT).Msg("renew account code and data")
+								continue _main
+							}
+							continue
+						}
+
+						var data core.AccountStateData
+						err = conn.CH.NewSelect().Model(&data).Where("data_hash = ?", s.DataHash).Scan(ctx.Context)
+						if err != nil {
+							log.Warn().Str("address", s.Address.String()).Uint64("last_tx_lt", s.LastTxLT).Msg("missed account data")
+							if err := fetchAccountCodeData(s); err != nil {
+								log.Error().Err(err).Str("address", s.Address.String()).Uint64("last_tx_lt", s.LastTxLT).Msg("renew account code and data")
+								continue _main
+							}
+							continue
+						}
+					}
+
+					for _, s := range states {
+						if s.LastTxLT > latestLT && s.LastTxLT != maxTxLt {
+							latestLT = s.LastTxLT
+						}
+					}
+				}
 			},
 		},
 	},
