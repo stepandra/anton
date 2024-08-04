@@ -700,26 +700,30 @@ var Command = &cli.Command{
 							maxTxLt = s.LastTxLT
 						}
 
-						var code core.AccountStateCode
-						err := conn.CH.NewSelect().Model(&code).Where("code_hash = ?", s.CodeHash).Scan(ctx.Context)
-						if err != nil {
-							log.Warn().Str("address", s.Address.String()).Uint64("last_tx_lt", s.LastTxLT).Msg("missed account code")
-							if err := fetchAccountCodeData(s); err != nil {
-								log.Error().Err(err).Str("address", s.Address.String()).Uint64("last_tx_lt", s.LastTxLT).Msg("renew account code and data")
-								continue _main
+						if len(s.CodeHash) > 0 {
+							var code core.AccountStateCode
+							err := conn.CH.NewSelect().Model(&code).Where("code_hash = ?", s.CodeHash).Scan(ctx.Context)
+							if err != nil {
+								log.Warn().Str("address", s.Address.String()).Uint64("last_tx_lt", s.LastTxLT).Msg("missed account code")
+								if err := fetchAccountCodeData(s); err != nil {
+									log.Error().Err(err).Str("address", s.Address.String()).Uint64("last_tx_lt", s.LastTxLT).Msg("renew account code and data")
+									continue _main
+								}
+								continue
 							}
-							continue
 						}
 
-						var data core.AccountStateData
-						err = conn.CH.NewSelect().Model(&data).Where("data_hash = ?", s.DataHash).Scan(ctx.Context)
-						if err != nil {
-							log.Warn().Str("address", s.Address.String()).Uint64("last_tx_lt", s.LastTxLT).Msg("missed account data")
-							if err := fetchAccountCodeData(s); err != nil {
-								log.Error().Err(err).Str("address", s.Address.String()).Uint64("last_tx_lt", s.LastTxLT).Msg("renew account code and data")
-								continue _main
+						if len(s.DataHash) > 0 {
+							var data core.AccountStateData
+							err = conn.CH.NewSelect().Model(&data).Where("data_hash = ?", s.DataHash).Scan(ctx.Context)
+							if err != nil {
+								log.Warn().Str("address", s.Address.String()).Uint64("last_tx_lt", s.LastTxLT).Msg("missed account data")
+								if err := fetchAccountCodeData(s); err != nil {
+									log.Error().Err(err).Str("address", s.Address.String()).Uint64("last_tx_lt", s.LastTxLT).Msg("renew account code and data")
+									continue _main
+								}
+								continue
 							}
-							continue
 						}
 					}
 
