@@ -10,6 +10,7 @@ import (
 	"github.com/allisson/go-env"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
+	"github.com/uptrace/go-clickhouse/ch"
 	"github.com/urfave/cli/v2"
 	"github.com/xssnick/tonutils-go/liteclient"
 	"github.com/xssnick/tonutils-go/ton"
@@ -675,10 +676,91 @@ var Command = &cli.Command{
 					return nil
 				}
 
+				getCodeData := func(ctx context.Context, rows []*core.AccountState) error { //nolint:gocognit,gocyclo // TODO: make one function working for both code and data
+					codeHashesSet, dataHashesSet := map[string]struct{}{}, map[string]struct{}{}
+					for _, row := range rows {
+						if len(row.CodeHash) == 32 {
+							codeHashesSet[string(row.CodeHash)] = struct{}{}
+						}
+						if len(row.DataHash) == 32 {
+							dataHashesSet[string(row.DataHash)] = struct{}{}
+						}
+					}
+
+					batchLen := 1000
+					codeHashBatches, dataHashBatches := make([][][]byte, 1), make([][][]byte, 1)
+					appendHash := func(hash []byte, batches [][][]byte) [][][]byte {
+						b := batches[len(batches)-1]
+						if len(b) >= batchLen {
+							b = [][]byte{}
+							batches = append(batches, b)
+						}
+						batches[len(batches)-1] = append(b, hash)
+						return batches
+					}
+					for h := range codeHashesSet {
+						codeHashBatches = appendHash([]byte(h), codeHashBatches)
+					}
+					for h := range dataHashesSet {
+						dataHashBatches = appendHash([]byte(h), dataHashBatches)
+					}
+
+					codeRes, dataRes := map[string][]byte{}, map[string][]byte{}
+					for _, b := range codeHashBatches {
+						var codeArr []*core.AccountStateCode
+						err := conn.CH.NewSelect().Model(&codeArr).Where("code_hash IN ?", ch.In(b)).Scan(ctx)
+						if err != nil {
+							return errors.Wrapf(err, "get code")
+						}
+						for _, x := range codeArr {
+							codeRes[string(x.CodeHash)] = x.Code
+						}
+					}
+					for _, b := range dataHashBatches {
+						var dataArr []*core.AccountStateData
+						err := conn.CH.NewSelect().Model(&dataArr).Where("data_hash IN ?", ch.In(b)).Scan(ctx)
+						if err != nil {
+							return errors.Wrapf(err, "get data")
+						}
+						for _, x := range dataArr {
+							dataRes[string(x.DataHash)] = x.Data
+						}
+					}
+
+					for _, row := range rows {
+						var ok bool
+						if len(row.CodeHash) == 32 {
+							if row.Code, ok = codeRes[string(row.CodeHash)]; !ok {
+								log.Warn().
+									Str("address", row.Address.String()).
+									Uint64("last_tx_lt", row.LastTxLT).
+									Msg("missed account code")
+								if err := fetchAccountCodeData(row); err != nil {
+									return errors.Wrapf(err, "(%s, %d)", row.Address.String(), row.LastTxLT)
+								}
+								continue
+							}
+						}
+						if len(row.DataHash) == 32 {
+							if row.Data, ok = dataRes[string(row.DataHash)]; !ok {
+								log.Warn().
+									Str("address", row.Address.String()).
+									Uint64("last_tx_lt", row.LastTxLT).
+									Msg("missed account data")
+								if err := fetchAccountCodeData(row); err != nil {
+									return errors.Wrapf(err, "(%s, %d)", row.Address.String(), row.LastTxLT)
+								}
+								continue
+							}
+						}
+					}
+
+					return nil
+				}
+
 				latestLT := ctx.Uint64("start-from")
 				batch := ctx.Int("limit")
 				totalChecked := 0
-			_main:
 				for {
 					var states []*core.AccountState
 
@@ -695,44 +777,17 @@ var Command = &cli.Command{
 						return nil
 					}
 
-					var maxTxLt uint64
-					for _, s := range states {
-						if s.LastTxLT > maxTxLt {
-							maxTxLt = s.LastTxLT
-						}
-
-						if len(s.CodeHash) > 0 {
-							var code core.AccountStateCode
-							err := conn.CH.NewSelect().Model(&code).Where("code_hash = ?", s.CodeHash).Scan(ctx.Context)
-							if err != nil {
-								log.Warn().Str("address", s.Address.String()).Uint64("last_tx_lt", s.LastTxLT).Msg("missed account code")
-								if err := fetchAccountCodeData(s); err != nil {
-									log.Error().Err(err).Str("address", s.Address.String()).Uint64("last_tx_lt", s.LastTxLT).Msg("renew account code and data")
-									continue _main
-								}
-								continue
-							}
-						}
-
-						if len(s.DataHash) > 0 {
-							var data core.AccountStateData
-							err = conn.CH.NewSelect().Model(&data).Where("data_hash = ?", s.DataHash).Scan(ctx.Context)
-							if err != nil {
-								log.Warn().Str("address", s.Address.String()).Uint64("last_tx_lt", s.LastTxLT).Msg("missed account data")
-								if err := fetchAccountCodeData(s); err != nil {
-									log.Error().Err(err).Str("address", s.Address.String()).Uint64("last_tx_lt", s.LastTxLT).Msg("renew account code and data")
-									continue _main
-								}
-								continue
-							}
-						}
+					if err := getCodeData(ctx.Context, states); err != nil {
+						log.Error().Err(err).Msg("fill code data")
+						continue
 					}
 
 					for _, s := range states {
-						if s.LastTxLT > latestLT && s.LastTxLT != maxTxLt {
+						if s.LastTxLT > latestLT {
 							latestLT = s.LastTxLT
 						}
 					}
+					latestLT--
 
 					totalChecked += len(states)
 					if totalChecked%500000 == 0 {
