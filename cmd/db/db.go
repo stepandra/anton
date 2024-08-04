@@ -683,7 +683,7 @@ var Command = &cli.Command{
 
 					err := conn.PG.NewSelect().Model(&states).
 						Where("last_tx_lt > ?", latestLT).
-						Order("ASC").
+						Order("last_tx_lt ASC").
 						Limit(batch).
 						Scan(ctx.Context)
 					if err != nil {
