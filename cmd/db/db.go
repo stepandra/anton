@@ -772,14 +772,15 @@ var Command = &cli.Command{
 					if err != nil {
 						return errors.Wrapf(err, "scan account states from %d", latestLT)
 					}
-					if len(states) == 0 {
-						log.Info().Msg("no states left")
-						return nil
-					}
 
 					if err := getCodeData(ctx.Context, states); err != nil {
 						log.Error().Err(err).Msg("fill code data")
 						continue
+					}
+
+					if len(states) < batch {
+						log.Info().Msg("no states left")
+						return nil
 					}
 
 					for _, s := range states {
