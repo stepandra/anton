@@ -170,9 +170,13 @@ func SkipAddress(a addr.Address) bool {
 		return true
 	case "EQCatS3EvWAhYaFEmLK_rOWViVgzN9RrHYh_PpNQ01X_WTPh": // TON lama distribution
 		return true
-	case "EQCfrctTcgYp6cd2iqgAVKiLKauJvBNC4sc84xYBvspyw3q7":
+	case "EQDF6fj6ydJJX_ArwxINjP-0H8zx982W4XgbkKzGvceUWvXl": // ETH Token Bridge Collector
 		return true
-	case "EQDa5wUCdTj1tqYV-LyIcefBHd3IGacvzhcBrSjmlKY2xnaK":
+	case "EQCfrctTcgYp6cd2iqgAVKiLKauJvBNC4sc84xYBvspyw3q7",
+		"EQAlMRLTYOoG6kM0d3dLHqgK30ol3qIYwMNtEelktzXP_pD5",
+		"EQDa5wUCdTj1tqYV-LyIcefBHd3IGacvzhcBrSjmlKY2xnaK",
+		"EQAU35_2hAbymisgUrhGa4bIJUtEJjVNVS7zBrqfKaENd67N",
+		"EQCxr1o-x7cEFb3vALiYMOW7QPuAoGHMtw1Yab5m6HrnuIuZ":
 		return true
 	default:
 		return false
