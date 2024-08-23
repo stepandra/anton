@@ -166,9 +166,13 @@ func SkipAddress(a addr.Address) bool {
 		return true
 	case "EQCp6qUScSUYB66ExDIlla8kfnUpP5cLZ_zhy4nlOPC-fqFo": // highload wallet v2 with heavy data
 		return true
+	case "EQC1Bq1GJY9ON_2WpSroVlXpejzfLNA8XoL2MYxtN50ZbJfN": // TryTON
+		return true
 	case "EQCTsnUmD2wvN-SBaa7CMF1sgTfC-YNywqbdPepKw34VBglS": // TryTON NFT collection
 		return true
-	case "EQCatS3EvWAhYaFEmLK_rOWViVgzN9RrHYh_PpNQ01X_WTPh": // TON lama distribution
+	case "EQCatS3EvWAhYaFEmLK_rOWViVgzN9RrHYh_PpNQ01X_WTPh": // TON lama jetton distribution
+		return true
+	case "EQBvc1QLuqTMx0NNTZ4DD__UzfTvkEOJMs67XoZhHVihWtMN": // POO jetton distribution
 		return true
 	case "EQDF6fj6ydJJX_ArwxINjP-0H8zx982W4XgbkKzGvceUWvXl": // ETH Token Bridge Collector
 		return true
@@ -176,7 +180,9 @@ func SkipAddress(a addr.Address) bool {
 		"EQAlMRLTYOoG6kM0d3dLHqgK30ol3qIYwMNtEelktzXP_pD5",
 		"EQDa5wUCdTj1tqYV-LyIcefBHd3IGacvzhcBrSjmlKY2xnaK",
 		"EQAU35_2hAbymisgUrhGa4bIJUtEJjVNVS7zBrqfKaENd67N",
-		"EQCxr1o-x7cEFb3vALiYMOW7QPuAoGHMtw1Yab5m6HrnuIuZ":
+		"EQCxr1o-x7cEFb3vALiYMOW7QPuAoGHMtw1Yab5m6HrnuIuZ",
+		"EQDCR0XQ0qNQJNjITRpo59mFsP0pjx81ImtXx92mJBnIc7m4",
+		"EQAYNJOQTA9FqZF4QGxzcPEvvMWkP76snfI7gATCur_86psC":
 		return true
 	default:
 		return false
