@@ -164,6 +164,8 @@ func SkipAddress(a addr.Address) bool {
 		return true
 	case "EQCqNjAPkigLdS5gxHiHitWuzF3ZN-gX7MlX4Qfy2cGS3FWx": // ton-squid
 		return true
+	case "EQCp6qUScSUYB66ExDIlla8kfnUpP5cLZ_zhy4nlOPC-fqFo": // highload wallet v2 with heavy data
+		return true
 	case "EQCfrctTcgYp6cd2iqgAVKiLKauJvBNC4sc84xYBvspyw3q7":
 		return true
 	case "EQDa5wUCdTj1tqYV-LyIcefBHd3IGacvzhcBrSjmlKY2xnaK":
