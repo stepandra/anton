@@ -166,6 +166,10 @@ func SkipAddress(a addr.Address) bool {
 		return true
 	case "EQCp6qUScSUYB66ExDIlla8kfnUpP5cLZ_zhy4nlOPC-fqFo": // highload wallet v2 with heavy data
 		return true
+	case "EQCTsnUmD2wvN-SBaa7CMF1sgTfC-YNywqbdPepKw34VBglS": // TryTON NFT collection
+		return true
+	case "EQCatS3EvWAhYaFEmLK_rOWViVgzN9RrHYh_PpNQ01X_WTPh": // TON lama distribution
+		return true
 	case "EQCfrctTcgYp6cd2iqgAVKiLKauJvBNC4sc84xYBvspyw3q7":
 		return true
 	case "EQDa5wUCdTj1tqYV-LyIcefBHd3IGacvzhcBrSjmlKY2xnaK":
