@@ -174,32 +174,33 @@ func (r *Repository) AddMessages(ctx context.Context, tx bun.Tx, messages []*cor
 	if len(messages) == 0 {
 		return nil
 	}
-	for _, msg := range messages { // TODO: on conflict does not work with array (bun bug)
-		// some external messages can be repeated with the same hash
 
-		// if some message has been already inserted,
-		// we update destination transaction and parsed data
+	// some external messages can be repeated with the same hash
 
-		_, err := tx.NewInsert().Model(msg).
-			On("CONFLICT (hash) DO UPDATE").
-			Set("dst_tx_lt = ?dst_tx_lt").
-			Set("dst_workchain = ?dst_workchain").
-			Set("dst_shard = ?dst_shard").
-			Set("dst_block_seq_no = ?dst_block_seq_no").
-			Set("src_contract = ?src_contract").
-			Set("dst_contract = ?dst_contract").
-			Set("operation_name = ?operation_name").
-			Set("data_json = ?data_json").
-			Set("error = ?error").
-			Exec(ctx)
-		if err != nil {
-			return err
-		}
-	}
-	_, err := r.ch.NewInsert().Model(&messages).Exec(ctx)
+	// if some message has been already inserted,
+	// we update destination transaction and parsed data
+
+	_, err := tx.NewInsert().Model(&messages).
+		On("CONFLICT (hash) DO UPDATE").
+		Set("dst_tx_lt = EXCLUDED.dst_tx_lt").
+		Set("dst_workchain = EXCLUDED.dst_workchain").
+		Set("dst_shard = EXCLUDED.dst_shard").
+		Set("dst_block_seq_no = EXCLUDED.dst_block_seq_no").
+		Set("src_contract = EXCLUDED.src_contract").
+		Set("dst_contract = EXCLUDED.dst_contract").
+		Set("operation_name = EXCLUDED.operation_name").
+		Set("data_json = EXCLUDED.data_json").
+		Set("error = EXCLUDED.error").
+		Exec(ctx)
 	if err != nil {
 		return err
 	}
+
+	_, err = r.ch.NewInsert().Model(&messages).Exec(ctx)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
