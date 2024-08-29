@@ -46,6 +46,9 @@ func (s *Service) insertData(
 		}
 	}
 
+	ctx, cancel := context.WithTimeout(ctx, time.Minute)
+	defer cancel()
+
 	if err := func() error {
 		defer core.Timer(time.Now(), "AddAccountStates(%d)", len(acc))
 		return s.accountRepo.AddAccountStates(ctx, dbTx, acc)
@@ -215,9 +218,6 @@ func (s *Service) saveBlocks(ctx context.Context, masterBlocks []*core.Block) {
 			newTransactions = append(newTransactions, master.Shards[i].Transactions...)
 		}
 	}
-
-	ctx, cancel := context.WithTimeout(ctx, time.Minute)
-	defer cancel()
 
 	if err := s.insertData(ctx, s.uniqAccounts(newTransactions), s.uniqMessages(ctx, newTransactions), newTransactions, newBlocks); err != nil {
 		panic(err)
