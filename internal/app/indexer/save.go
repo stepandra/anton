@@ -168,6 +168,8 @@ func (s *Service) getMessageSource(ctx context.Context, msg *core.Message) (skip
 }
 
 func (s *Service) uniqMessages(ctx context.Context, transactions []*core.Transaction) []*core.Message {
+	defer core.Timer(time.Now(), "uniqMessages(%d)", len(transactions))
+
 	var ret []*core.Message
 
 	uniqMsg := make(map[string]*core.Message)
