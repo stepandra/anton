@@ -195,12 +195,25 @@ func (s *Service) uniqMessages(ctx context.Context, transactions []*core.Transac
 
 var lastLog = time.Now()
 
-func (s *Service) saveBlock(ctx context.Context, master *core.Block) {
-	newBlocks := append([]*core.Block{master}, master.Shards...)
+func (s *Service) saveBlocks(ctx context.Context, masterBlocks []*core.Block) {
+	var (
+		newBlocks       []*core.Block
+		newTransactions []*core.Transaction
+		lastSeqNo       uint32
+	)
 
-	var newTransactions []*core.Transaction
-	for i := range newBlocks {
-		newTransactions = append(newTransactions, newBlocks[i].Transactions...)
+	for _, master := range masterBlocks {
+		if master.SeqNo > lastSeqNo {
+			lastSeqNo = master.SeqNo
+		}
+
+		newBlocks = append(newBlocks, master)
+		newBlocks = append(newBlocks, master.Shards...)
+
+		newTransactions = append(newTransactions, master.Transactions...)
+		for i := range master.Shards {
+			newTransactions = append(newTransactions, master.Shards[i].Transactions...)
+		}
 	}
 
 	if err := s.insertData(ctx, s.uniqAccounts(newTransactions), s.uniqMessages(ctx, newTransactions), newTransactions, newBlocks); err != nil {
@@ -212,7 +225,10 @@ func (s *Service) saveBlock(ctx context.Context, master *core.Block) {
 		lvl = log.Info()
 		lastLog = time.Now()
 	}
-	lvl.Uint32("last_inserted_seq", master.SeqNo).Msg("inserted new block")
+	lvl.
+		Int("master_blocks_len", len(masterBlocks)).
+		Uint32("last_inserted_seq", lastSeqNo).
+		Msg("inserted new block")
 }
 
 func (s *Service) saveBlocksLoop(results <-chan *core.Block) {
@@ -220,20 +236,27 @@ func (s *Service) saveBlocksLoop(results <-chan *core.Block) {
 	defer t.Stop()
 
 	for s.running() {
-		var b *core.Block
+		var blocks []*core.Block
 
-		select {
-		case b = <-results:
-		case <-t.C:
-			continue
+	_loop:
+		for {
+			select {
+			case b := <-results:
+				log.Debug().
+					Uint32("master_seq_no", b.SeqNo).
+					Int("master_tx", len(b.Transactions)).
+					Int("shards", len(b.Shards)).
+					Msg("new master")
+
+				blocks = append(blocks, b)
+
+			case <-t.C:
+				break _loop
+			}
 		}
 
-		log.Debug().
-			Uint32("master_seq_no", b.SeqNo).
-			Int("master_tx", len(b.Transactions)).
-			Int("shards", len(b.Shards)).
-			Msg("new master")
-
-		s.saveBlock(context.Background(), b)
+		if len(blocks) != 0 {
+			s.saveBlocks(context.Background(), blocks)
+		}
 	}
 }
