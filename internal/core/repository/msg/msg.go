@@ -2,7 +2,6 @@ package msg
 
 import (
 	"context"
-	"database/sql"
 	"fmt"
 	"strings"
 
@@ -243,33 +242,14 @@ func (r *Repository) UpdateMessages(ctx context.Context, messages []*core.Messag
 	return nil
 }
 
-func (r *Repository) GetMessage(ctx context.Context, hash []byte) (*core.Message, error) {
-	var ret core.Message
-
-	err := r.pg.NewSelect().Model(&ret).
-		Relation("SrcState").
-		Relation("DstState").
-		Where("hash = ?", hash).
-		Scan(ctx)
-	if errors.Is(err, sql.ErrNoRows) {
-		return nil, core.ErrNotFound
-	}
-	if err != nil {
-		return nil, err
-	}
-
-	return &ret, nil
-}
-
 func (r *Repository) GetMessages(ctx context.Context, hashes [][]byte) ([]*core.Message, error) {
 	var ret []*core.Message
 
 	err := r.pg.NewSelect().Model(&ret).
+		Relation("SrcState").
+		Relation("DstState").
 		Where("hash IN (?)", bun.In(hashes)).
 		Scan(ctx)
-	if errors.Is(err, sql.ErrNoRows) {
-		return nil, core.ErrNotFound
-	}
 	if err != nil {
 		return nil, err
 	}
