@@ -216,6 +216,9 @@ func (s *Service) saveBlocks(ctx context.Context, masterBlocks []*core.Block) {
 		}
 	}
 
+	ctx, cancel := context.WithTimeout(ctx, time.Minute)
+	defer cancel()
+
 	if err := s.insertData(ctx, s.uniqAccounts(newTransactions), s.uniqMessages(ctx, newTransactions), newTransactions, newBlocks); err != nil {
 		panic(err)
 	}
