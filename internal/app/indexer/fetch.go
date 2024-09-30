@@ -149,7 +149,7 @@ func publishProcessedBlocks(fromBlock uint32, processed []*core.Block, results c
 
 			fromBlock++
 
-			copy(processed[:it], processed[it+1:])
+			copy(processed[it:], processed[it+1:])
 			processed = processed[:len(processed)-1]
 
 			found = true
