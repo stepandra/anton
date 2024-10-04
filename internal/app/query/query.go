@@ -2,6 +2,7 @@ package query
 
 import (
 	"context"
+	"sync"
 
 	"github.com/pkg/errors"
 	"github.com/xssnick/tonutils-go/ton"
@@ -32,6 +33,10 @@ type Service struct {
 	txRepo       repository.Transaction
 	msgRepo      repository.Message
 	accountRepo  repository.Account
+
+	statsLastBlock uint32
+	statsCached    *aggregate.Statistics
+	statsLock      sync.RWMutex
 }
 
 func NewService(_ context.Context, cfg *app.QueryConfig) (*Service, error) {
@@ -53,7 +58,27 @@ func (s *Service) GetDefinitions(ctx context.Context) (map[abi.TLBType]abi.TLBFi
 }
 
 func (s *Service) GetStatistics(ctx context.Context) (*aggregate.Statistics, error) {
-	return aggregate.GetStatistics(ctx, s.DB.CH, s.DB.PG)
+	s.statsLock.RLock()
+	defer s.statsLock.RUnlock()
+
+	m, err := s.blockRepo.GetLastMasterBlock(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	if s.statsCached != nil && m.SeqNo == s.statsLastBlock {
+		return s.statsCached, nil
+	}
+
+	stats, err := aggregate.GetStatistics(ctx, s.DB.CH, s.DB.PG)
+	if err != nil {
+		return nil, err
+	}
+
+	s.statsCached = stats
+	s.statsLastBlock = uint32(stats.LastBlock)
+
+	return stats, nil
 }
 
 func (s *Service) GetInterfaces(ctx context.Context) ([]*core.ContractInterface, error) {
