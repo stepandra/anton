@@ -38,14 +38,6 @@ type AddressLabel struct {
 	Categories []LabelCategory `ch:",lc" bun:"type:label_category[]" json:"categories,omitempty"`
 }
 
-type NFTContentData struct {
-	ContentURI         string `ch:"type:String" bun:",nullzero" json:"content_uri,omitempty"`
-	ContentName        string `ch:"type:String" bun:",nullzero" json:"content_name,omitempty"`
-	ContentDescription string `ch:"type:String" bun:",nullzero" json:"content_description,omitempty"`
-	ContentImage       string `ch:"type:String" bun:",nullzero" json:"content_image,omitempty"`
-	ContentImageData   []byte `ch:"type:String" bun:",nullzero" json:"content_image_data,omitempty"`
-}
-
 type FTWalletData struct {
 	JettonBalance *bunbig.Int `ch:"type:UInt256" bun:"type:numeric" json:"jetton_balance,omitempty" swaggertype:"string"`
 }
@@ -101,7 +93,6 @@ type AccountState struct {
 	ExecutedGetMethods map[abi.ContractName][]abi.GetMethodExecution `ch:"type:String" bun:"type:jsonb" json:"executed_get_methods,omitempty"`
 
 	// TODO: remove this
-	NFTContentData
 	FTWalletData
 
 	UpdatedAt time.Time `bun:"type:timestamp without time zone,notnull" json:"updated_at"`
