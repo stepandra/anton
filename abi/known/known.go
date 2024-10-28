@@ -1,6 +1,6 @@
 package known
 
-import "github.com/tonindexer/anton/abi"
+import "github.com/stepandra/anton/abi"
 
 var (
 	JettonMinter abi.ContractName = "jetton_minter"
