@@ -29,7 +29,7 @@ type AccountsRes struct {
 }
 
 type UniqueOwner struct {
-	ItemAddress addr.Address `json:"item_address"`
+	ItemAddress addr.Address `json:"item_address" swaggertype:"string"`
 	OwnersCount int         `json:"owners_count"`
 }
 
