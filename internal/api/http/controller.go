@@ -403,6 +403,8 @@ func (c *Controller) GetAccounts(ctx *gin.Context) {
 //	@Param   		minter_address		query	string  	false	"NFT collection or FT master address"
 //	@Param   		limit	     		query   int 		false	"limit"									default(25) maximum(1000000)
 //	@Success		200		{object}	aggregate.AccountsRes
+//	@Failure		400		{object}	gin.H
+//	@Failure		500		{object}	gin.H
 //	@Router			/accounts/aggregated [get]
 func (c *Controller) AggregateAccounts(ctx *gin.Context) {
 	var req aggregate.AccountsReq
