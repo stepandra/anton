@@ -15,8 +15,8 @@ import (
 	"github.com/xssnick/tonutils-go/address"
 	"github.com/xssnick/tonutils-go/tvm/cell"
 
-	"github.com/tonindexer/anton/abi"
-	"github.com/tonindexer/anton/abi/known"
+	"github.com/stepandra/anton/abi"
+	"github.com/stepandra/anton/abi/known"
 	"github.com/tonindexer/anton/addr"
 	"github.com/tonindexer/anton/internal/app"
 	"github.com/tonindexer/anton/internal/core"

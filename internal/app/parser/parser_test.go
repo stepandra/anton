@@ -9,8 +9,8 @@ import (
 	"github.com/stretchr/testify/require"
 	"github.com/xssnick/tonutils-go/tvm/cell"
 
-	"github.com/tonindexer/anton/abi"
-	"github.com/tonindexer/anton/abi/known"
+	"github.com/stepandra/anton/abi"
+	"github.com/stepandra/anton/abi/known"
 	"github.com/tonindexer/anton/internal/app"
 	"github.com/tonindexer/anton/internal/core"
 )
@@ -84,20 +84,20 @@ func (m *mockContractRepo) GetMethodDescription(_ context.Context, contract abi.
 			}},
 		}, nil
 
-	case contract == known.NFTCollection && gm == "get_nft_address_by_index":
-		return abi.GetMethodDesc{
-			Name: "get_nft_address_by_index",
-			Arguments: []abi.VmValueDesc{{
-				Name:      "index",
-				StackType: "int",
-				Format:    "bytes",
-			}},
-			ReturnValues: []abi.VmValueDesc{{
-				Name:      "address",
-				StackType: "slice",
-				Format:    "addr",
-			}},
-		}, nil
+	// case contract == known.NFTCollection && gm == "get_nft_address_by_index":
+	// 	return abi.GetMethodDesc{
+	// 		Name: "get_nft_address_by_index",
+	// 		Arguments: []abi.VmValueDesc{{
+	// 			Name:      "index",
+	// 			StackType: "int",
+	// 			Format:    "bytes",
+	// 		}},
+	// 		ReturnValues: []abi.VmValueDesc{{
+	// 			Name:      "address",
+	// 			StackType: "slice",
+	// 			Format:    "addr",
+	// 		}},
+	// 	}, nil
 
 	case contract == known.JettonMinter && gm == "get_wallet_address":
 		return abi.GetMethodDesc{

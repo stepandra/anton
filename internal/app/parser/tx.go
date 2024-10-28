@@ -7,7 +7,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/xssnick/tonutils-go/tvm/cell"
 
-	"github.com/tonindexer/anton/abi/known"
+	"github.com/stepandra/anton/abi/known"
 	"github.com/tonindexer/anton/internal/app"
 	"github.com/tonindexer/anton/internal/core"
 )

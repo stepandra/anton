@@ -13,8 +13,8 @@ import (
 	"github.com/uptrace/bun/dialect/pgdialect"
 	"github.com/uptrace/bun/driver/pgdriver"
 
-	"github.com/tonindexer/anton/abi"
-	"github.com/tonindexer/anton/abi/known"
+	"github.com/stepandra/anton/abi"
+	"github.com/stepandra/anton/abi/known"
 	"github.com/tonindexer/anton/addr"
 	"github.com/tonindexer/anton/internal/core"
 	"github.com/tonindexer/anton/internal/core/repository/contract"

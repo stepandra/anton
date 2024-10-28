@@ -16,7 +16,7 @@ import (
 
 	"github.com/uptrace/go-clickhouse/ch"
 
-	"github.com/tonindexer/anton/abi"
+	"github.com/stepandra/anton/abi"
 	"github.com/tonindexer/anton/internal/core"
 	"github.com/tonindexer/anton/internal/core/repository/account"
 	"github.com/tonindexer/anton/internal/core/rndm"

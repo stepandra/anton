@@ -21,7 +21,7 @@ import (
 	"github.com/uptrace/bun/driver/pgdriver"
 	"github.com/urfave/cli/v2"
 
-	"github.com/tonindexer/anton/abi"
+	"github.com/stepandra/anton/abi"
 	"github.com/tonindexer/anton/internal/core"
 	"github.com/tonindexer/anton/internal/core/repository/contract"
 	"github.com/tonindexer/anton/internal/core/repository/rescan"

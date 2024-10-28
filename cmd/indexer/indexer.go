@@ -17,7 +17,7 @@ import (
 	"github.com/xssnick/tonutils-go/liteclient"
 	"github.com/xssnick/tonutils-go/ton"
 
-	"github.com/tonindexer/anton/abi"
+	"github.com/stepandra/anton/abi"
 	contractDesc "github.com/tonindexer/anton/cmd/contract"
 	"github.com/tonindexer/anton/internal/app"
 	"github.com/tonindexer/anton/internal/app/fetcher"

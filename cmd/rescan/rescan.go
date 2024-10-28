@@ -13,7 +13,7 @@ import (
 	"github.com/xssnick/tonutils-go/liteclient"
 	"github.com/xssnick/tonutils-go/ton"
 
-	"github.com/tonindexer/anton/abi"
+	"github.com/stepandra/anton/abi"
 	"github.com/tonindexer/anton/internal/app"
 	"github.com/tonindexer/anton/internal/app/parser"
 	"github.com/tonindexer/anton/internal/app/rescan"

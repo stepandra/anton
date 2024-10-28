@@ -7,7 +7,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/xssnick/tonutils-go/ton"
 
-	"github.com/tonindexer/anton/abi"
+	"github.com/stepandra/anton/abi"
 	"github.com/tonindexer/anton/addr"
 	"github.com/tonindexer/anton/internal/app"
 	"github.com/tonindexer/anton/internal/app/fetcher"
