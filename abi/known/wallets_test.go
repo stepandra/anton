@@ -9,7 +9,7 @@ import (
 
 	"github.com/xssnick/tonutils-go/address"
 
-	"github.com/tonindexer/anton/abi"
+	"github.com/stepandra/anton/abi"
 	"github.com/tonindexer/anton/addr"
 )
 
