@@ -146,6 +146,7 @@ func (c *Controller) GetStatistics(ctx *gin.Context) {
 	ctx.IndentedJSON(http.StatusOK, ret)
 }
 
+// GetInterfacesRes represents the response for GetInterfaces endpoint
 type GetInterfacesRes struct {
 	Total   int                       `json:"total"`
 	Results []*core.ContractInterface `json:"results"`
@@ -158,7 +159,7 @@ type GetInterfacesRes struct {
 //	@Tags			contract
 //	@Accept			json
 //	@Produce		json
-//	@Success		200		{object}		GetInterfacesRes
+//	@Success		200	{object}	GetInterfacesRes
 //	@Router			/contracts/interfaces [get]
 func (c *Controller) GetInterfaces(ctx *gin.Context) {
 	ret, err := c.svc.GetInterfaces(ctx)
