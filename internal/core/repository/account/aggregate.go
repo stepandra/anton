@@ -43,10 +43,6 @@ func (r *Repository) aggregateAddressStatistics(ctx context.Context, req *aggreg
 	for _, x := range countByInterfaces {
 		for _, t := range x.Types {
 			switch t {
-			case known.NFTItem:
-				res.OwnedNFTItems += x.Count
-			case known.NFTCollection:
-				res.OwnedNFTCollections += x.Count
 			case known.JettonWallet:
 				res.OwnedJettonWallets += x.Count
 			}
@@ -95,7 +91,7 @@ func (r *Repository) aggregateNFTMinter(ctx context.Context, req *aggregate.Acco
 		Where("minter_address = ?", req.MinterAddress).
 		Group("item_address").
 		Order("owners_count DESC").
-		Limit(req.Limit).
+		Limit(int(req.Limit)).
 		Scan(ctx, &res.UniqueOwners)
 	if err != nil {
 		return errors.Wrap(err, "count unique owners of nft items")
@@ -107,7 +103,7 @@ func (r *Repository) aggregateNFTMinter(ctx context.Context, req *aggregate.Acco
 		TableExpr("(?) as q", r.makeLastItemOwnerQuery(req.MinterAddress)).
 		Group("owner_address").
 		Order("items_count DESC").
-		Limit(req.Limit).
+		Limit(int(req.Limit)).
 		Scan(ctx, &res.OwnedItems)
 	if err != nil {
 		return errors.Wrap(err, "count owned nft items")
@@ -137,7 +133,7 @@ func (r *Repository) aggregateFTMinter(ctx context.Context, req *aggregate.Accou
 	err = r.makeLastItemOwnerQuery(req.MinterAddress).
 		ColumnExpr("argMax(jetton_balance, last_tx_lt) AS balance").
 		Order("balance DESC").
-		Limit(req.Limit).
+		Limit(int(req.Limit)).
 		Scan(ctx, &res.OwnedBalance)
 	if err != nil {
 		return errors.Wrap(err, "count jetton holders")
@@ -164,11 +160,6 @@ func (r *Repository) aggregateMinterStatistics(ctx context.Context, req *aggrega
 
 	for _, t := range interfaces {
 		switch t {
-		case known.NFTCollection:
-			if err := r.aggregateNFTMinter(ctx, req, res); err != nil {
-				return err
-			}
-
 		case known.JettonMinter:
 			if err := r.aggregateFTMinter(ctx, req, res); err != nil {
 				return err

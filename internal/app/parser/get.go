@@ -13,7 +13,6 @@ import (
 	"github.com/uptrace/bun/extra/bunbig"
 
 	"github.com/xssnick/tonutils-go/address"
-	"github.com/xssnick/tonutils-go/tvm/cell"
 
 	"github.com/stepandra/anton/abi"
 	"github.com/stepandra/anton/abi/known"

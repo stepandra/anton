@@ -1,6 +1,7 @@
 package aggregate
 
 import (
+	"context"
 	"github.com/stepandra/anton/abi"
 	"github.com/stepandra/anton/addr"
 	"github.com/stepandra/anton/internal/core"
@@ -26,5 +27,11 @@ type AccountsRes struct {
 	Wallets             int                `json:"wallets"`
 	TotalSupply         *string             `json:"total_supply,omitempty"`
 	OwnedBalance        []*core.OwnedItem   `json:"owned_balance"`
+}
+
+// AccountRepository defines methods for aggregating account data
+type AccountRepository interface {
+	// AggregateAccounts aggregates account data based on the provided request parameters
+	AggregateAccounts(ctx context.Context, req *AccountsReq) (*AccountsRes, error)
 }
 

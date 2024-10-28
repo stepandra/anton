@@ -20,19 +20,21 @@ import (
 	"github.com/stepandra/anton/internal/core/filter"
 )
 
-// @title      		Anton
-// @version     	0.1
-// @description 	Project fetches data from TON blockchain.
+// @title           Anton
+// @version         0.1
+// @description     Project fetches data from TON blockchain.
 
-// @contact.name   	Anton
-// @contact.url    	https://anton.tools
+// @contact.name    Anton
+// @contact.url     https://anton.tools
 
-// @license.name  	Apache 2.0
-// @license.url   	http://www.apache.org/licenses/LICENSE-2.0.html
+// @license.name    Apache 2.0
+// @license.url     http://www.apache.org/licenses/LICENSE-2.0.html
 
-// @host      		anton.tools
-// @BasePath  		/api/v0
-// @schemes 		https
+// @host           anton.tools
+// @BasePath       /api/v0
+// @schemes        https
+
+// @securityDefinitions.basic  BasicAuth
 
 var basePath = "/api/v0"
 

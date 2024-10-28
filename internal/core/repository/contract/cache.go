@@ -35,8 +35,7 @@ func (c *cache) clearCaches() {
 	for i, im := range c.getMethods {
 		for gm := range im {
 			switch {
-			case i == known.NFTCollection && (gm == "get_nft_content" || gm == "get_nft_address_by_index"),
-				i == known.JettonMinter && gm == "get_wallet_address",
+			case i == known.JettonMinter && gm == "get_wallet_address",
 				(i == known.DedustV2Factory || i == known.StonFiRouter) && gm == "get_pool_address":
 				continue
 			}
