@@ -132,18 +132,13 @@ func (s *Service) clearExecutedGetMethod(task *core.RescanTask, acc *core.Accoun
 	}
 
 	switch task.ContractName {
-	case known.NFTCollection, known.NFTItem, known.JettonMinter, known.JettonWallet:
+	case known.JettonMinter, known.JettonWallet:
 	default:
 		return
 	}
 
 	switch gm {
 	case "get_nft_content", "get_collection_data", "get_jetton_data":
-		acc.ContentURI = ""
-		acc.ContentName = ""
-		acc.ContentDescription = ""
-		acc.ContentImage = ""
-		acc.ContentImageData = nil
 	}
 
 	switch gm {

@@ -103,7 +103,7 @@ func (r *Repository) aggregateNFTMinter(ctx context.Context, req *aggregate.Acco
 		TableExpr("(?) as q", r.makeLastItemOwnerQuery(req.MinterAddress)).
 		Group("owner_address").
 		Order("items_count DESC").
-		Limit(req.Limit).
+		Limit(int(req.Limit)).
 		Scan(ctx, &res.OwnedItems)
 	if err != nil {
 		return errors.Wrap(err, "count owned nft items")
@@ -160,11 +160,6 @@ func (r *Repository) aggregateMinterStatistics(ctx context.Context, req *aggrega
 
 	for _, t := range interfaces {
 		switch t {
-		case known.NFTCollection:
-			if err := r.aggregateNFTMinter(ctx, req, res); err != nil {
-				return err
-			}
-
 		case known.JettonMinter:
 			if err := r.aggregateFTMinter(ctx, req, res); err != nil {
 				return err
