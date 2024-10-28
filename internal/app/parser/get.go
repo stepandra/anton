@@ -6,21 +6,31 @@ import (
 	"fmt"
 	"math/big"
 	"sort"
+	"time"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 	"github.com/uptrace/bun/extra/bunbig"
 
 	"github.com/xssnick/tonutils-go/address"
-	"github.com/xssnick/tonutils-go/ton/nft"
 	"github.com/xssnick/tonutils-go/tvm/cell"
 
-	"github.com/tonindexer/anton/abi"
-	"github.com/tonindexer/anton/abi/known"
+	"github.com/stepandra/anton/abi"
+	"github.com/stepandra/anton/abi/known"
 	"github.com/tonindexer/anton/addr"
 	"github.com/tonindexer/anton/internal/app"
 	"github.com/tonindexer/anton/internal/core"
 )
+
+var (
+	dedustFactoryAddr *addr.Address
+	stonfiRouterAddr  *addr.Address
+)
+
+func init() {
+	dedustFactoryAddr = addr.MustFromBase64("EQBfBWT7X2BHg9tXAxzhz2aKiNTU1tpt5NsiK0uSDW_YAJ67")
+	stonfiRouterAddr = addr.MustFromBase64("EQB3ncyBUTjZUA5EnFKR5_EnOMI9V1tTEAAPaiU71gc4TiUt")
+}
 
 func getMethodByName(i *core.ContractInterface, n string) *abi.GetMethodDesc {
 	for it := range i.GetMethodsDesc {
@@ -48,6 +58,8 @@ func (s *Service) emulateGetMethod(ctx context.Context, d *abi.GetMethodDesc, ac
 		})
 	}
 
+	defer core.Timer(time.Now(), fmt.Sprintf("emulateGetMethod(%s, %s)", acc.Address.Base64(), d.Name))
+
 	codeBase64, dataBase64, librariesBase64 :=
 		base64.StdEncoding.EncodeToString(acc.Code),
 		base64.StdEncoding.EncodeToString(acc.Data),
@@ -73,9 +85,6 @@ func (s *Service) emulateGetMethod(ctx context.Context, d *abi.GetMethodDesc, ac
 		ret.Error = err.Error()
 
 		lvl := log.Warn()
-		if d.Name == "get_telemint_auction_state" && ret.Error == "tvm execution failed with code 219" {
-			lvl = log.Debug() // err::no_auction
-		}
 		lvl.Err(err).
 			Str("get_method", d.Name).
 			Str("address", acc.Address.Base64()).
@@ -126,103 +135,58 @@ func appendGetMethodExecution(acc *core.AccountState, contract abi.ContractName,
 	acc.ExecutedGetMethods[contract] = append(acc.ExecutedGetMethods[contract], *exec)
 }
 
-func mapContentDataNFT(ret *core.AccountState, c any) {
-	if c == nil {
-		return
-	}
-	switch content := c.(type) {
-	case *nft.ContentSemichain: // TODO: remove this (?)
-		ret.ContentURI = content.URI
-		ret.ContentName = content.Name
-		ret.ContentDescription = content.Description
-		ret.ContentImage = content.Image
-		ret.ContentImageData = content.ImageData
-
-	case *nft.ContentOnchain:
-		ret.ContentName = content.Name
-		ret.ContentDescription = content.Description
-		ret.ContentImage = content.Image
-		ret.ContentImageData = content.ImageData
-
-	case *nft.ContentOffchain:
-		ret.ContentURI = content.URI
-	}
-}
-
-func (s *Service) getNFTItemContent(ctx context.Context, collection *core.AccountState, idx *big.Int, itemContent *cell.Cell, acc *core.AccountState) {
-	desc, err := s.ContractRepo.GetMethodDescription(ctx, known.NFTCollection, "get_nft_content")
-	if err != nil {
-		panic("get 'get_nft_content' method description")
-	}
-
-	args := []any{idx.Bytes(), itemContent}
-
-	exec, err := s.emulateGetMethod(ctx, &desc, collection, args)
-	if err != nil {
-		log.Error().Err(err).Msg("execute get_nft_content nft_collection get-method")
+func (s *Service) checkJettonMinter(ctx context.Context, ownerAddr *addr.Address, walletAcc *core.AccountState, others func(context.Context, addr.Address) (*core.AccountState, error)) {
+	if minterAddr, ok := s.itemsMinterCache.Get(walletAcc.Address); ok && addr.Equal(walletAcc.MinterAddress, &minterAddr) {
 		return
 	}
 
-	exec.Address = &collection.Address
-
-	appendGetMethodExecution(acc, known.NFTCollection, &exec)
-	if exec.Error != "" {
+	minter, err := others(ctx, *walletAcc.MinterAddress)
+	if err != nil {
+		log.Error().Str("minter_address", walletAcc.MinterAddress.Base64()).Err(err).Msg("get jetton minter state")
 		return
 	}
 
-	mapContentDataNFT(acc, exec.Returns[0])
-}
-
-func (s *Service) checkMinter(ctx context.Context, minter, item *core.AccountState, i abi.ContractName, desc *abi.GetMethodDesc, args []any) {
-	item.Fake = true
-
-	exec, err := s.emulateGetMethod(ctx, desc, minter, args)
+	desc, err := s.ContractRepo.GetMethodDescription(ctx, known.JettonMinter, "get_wallet_address")
 	if err != nil {
-		log.Error().Err(err).Msgf("execute %s %s get-method", desc.Name, i)
+		panic(fmt.Errorf("get 'get_wallet_address' method description: %w", err))
+	}
+
+	args := []any{ownerAddr.MustToTonutils()}
+
+	walletAcc.Fake = true
+
+	exec, err := s.emulateGetMethod(ctx, &desc, minter, args)
+	if err != nil {
+		log.Error().Err(err).Msgf("execute %s %s get-method", desc.Name, known.JettonMinter)
 		return
 	}
 
 	exec.Address = &minter.Address
 
-	appendGetMethodExecution(item, i, &exec)
+	appendGetMethodExecution(walletAcc, known.JettonMinter, &exec)
 	if exec.Error != "" {
-		log.Error().Str("exec_error", exec.Error).Msgf("execute %s %s get-method", desc.Name, i)
+		log.Error().Str("exec_error", exec.Error).Msgf("execute %s %s get-method", desc.Name, known.JettonMinter)
 		return
 	}
 
 	itemAddr := addr.MustFromTonutils(exec.Returns[0].(*address.Address)) //nolint:forcetypeassert // panic on wrong interface
-	if addr.Equal(itemAddr, &item.Address) {
-		item.Fake = false
-	}
-}
-
-func (s *Service) checkNFTMinter(ctx context.Context, minter *core.AccountState, idx *big.Int, item *core.AccountState) {
-	desc, err := s.ContractRepo.GetMethodDescription(ctx, known.NFTCollection, "get_nft_address_by_index")
-	if err != nil {
-		panic("get 'get_nft_address_by_index' method description")
+	if addr.Equal(itemAddr, &walletAcc.Address) {
+		walletAcc.Fake = false
 	}
 
-	args := []any{idx.Bytes()}
-
-	s.checkMinter(ctx, minter, item, known.NFTCollection, &desc, args)
-}
-
-func (s *Service) checkJettonMinter(ctx context.Context, minter *core.AccountState, ownerAddr *addr.Address, walletAcc *core.AccountState) {
-	desc, err := s.ContractRepo.GetMethodDescription(ctx, known.JettonMinter, "get_wallet_address")
-	if err != nil {
-		panic("get 'get_wallet_address' method description")
+	if !walletAcc.Fake {
+		s.itemsMinterCache.Put(walletAcc.Address, minter.Address)
 	}
-
-	args := []any{ownerAddr.MustToTonutils()}
-
-	s.checkMinter(ctx, minter, walletAcc, known.JettonMinter, &desc, args)
 }
 
 func (s *Service) checkDeDustMinter(ctx context.Context, acc *core.AccountState, others func(context.Context, addr.Address) (*core.AccountState, error)) {
-	factoryAddr := "EQBfBWT7X2BHg9tXAxzhz2aKiNTU1tpt5NsiK0uSDW_YAJ67"
-	factory, err := others(ctx, *addr.MustFromBase64(factoryAddr))
+	if minterAddr, ok := s.itemsMinterCache.Get(acc.Address); ok && addr.Equal(dedustFactoryAddr, &minterAddr) {
+		return
+	}
+
+	factory, err := others(ctx, *dedustFactoryAddr)
 	if err != nil {
-		log.Error().Str("factory_address", factoryAddr).Err(err).Msg("get dedust v2 factory state")
+		log.Error().Str("factory_address", dedustFactoryAddr.Base64()).Err(err).Msg("get dedust v2 factory state")
 		return
 	}
 
@@ -236,7 +200,7 @@ func (s *Service) checkDeDustMinter(ctx context.Context, acc *core.AccountState,
 
 	desc, err := s.ContractRepo.GetMethodDescription(ctx, known.DedustV2Factory, "get_pool_address")
 	if err != nil {
-		panic("get 'get_pool_address' method description")
+		panic(fmt.Errorf("get 'get_pool_address' method description: %w", err))
 	}
 
 	asset0 := acc.ExecutedGetMethods[known.DedustV2Pool][0].Returns[0].(*abi.DedustAsset) //nolint:forcetypeassert // that's ok
@@ -245,14 +209,38 @@ func (s *Service) checkDeDustMinter(ctx context.Context, acc *core.AccountState,
 
 	args := []any{isStable, asset0, asset1}
 
-	s.checkMinter(ctx, factory, acc, known.DedustV2Factory, &desc, args)
+	exec, err := s.emulateGetMethod(ctx, &desc, factory, args)
+	if err != nil {
+		log.Error().Err(err).Msgf("execute %s %s get-method", desc.Name, known.DedustV2Factory)
+		return
+	}
+
+	exec.Address = &factory.Address
+
+	appendGetMethodExecution(acc, known.DedustV2Factory, &exec)
+	if exec.Error != "" {
+		log.Error().Str("exec_error", exec.Error).Msgf("execute %s %s get-method", desc.Name, known.DedustV2Factory)
+		return
+	}
+
+	itemAddr := addr.MustFromTonutils(exec.Returns[0].(*address.Address)) //nolint:forcetypeassert // panic on wrong interface
+	if addr.Equal(itemAddr, &acc.Address) {
+		acc.Fake = false
+	}
+
+	if !acc.Fake {
+		s.itemsMinterCache.Put(acc.Address, factory.Address)
+	}
 }
 
 func (s *Service) checkStonFiMinter(ctx context.Context, acc *core.AccountState, others func(context.Context, addr.Address) (*core.AccountState, error)) {
-	routerAddr := "EQB3ncyBUTjZUA5EnFKR5_EnOMI9V1tTEAAPaiU71gc4TiUt"
-	router, err := others(ctx, *addr.MustFromBase64(routerAddr))
+	if minterAddr, ok := s.itemsMinterCache.Get(acc.Address); ok && addr.Equal(stonfiRouterAddr, &minterAddr) {
+		return
+	}
+
+	router, err := others(ctx, *stonfiRouterAddr)
 	if err != nil {
-		log.Error().Str("router_address", routerAddr).Err(err).Msg("get stonfi router state")
+		log.Error().Str("router_address", stonfiRouterAddr.Base64()).Err(err).Msg("get stonfi router state")
 		return
 	}
 
@@ -266,7 +254,7 @@ func (s *Service) checkStonFiMinter(ctx context.Context, acc *core.AccountState,
 
 	desc, err := s.ContractRepo.GetMethodDescription(ctx, known.StonFiRouter, "get_pool_address")
 	if err != nil {
-		panic("get 'get_pool_address' method description")
+		panic(fmt.Errorf("get 'get_pool_address' method description: %w", err))
 	}
 
 	asset0 := acc.ExecutedGetMethods[known.StonFiPool][0].Returns[2].(*address.Address) //nolint:forcetypeassert // that's ok
@@ -274,7 +262,28 @@ func (s *Service) checkStonFiMinter(ctx context.Context, acc *core.AccountState,
 
 	args := []any{asset0, asset1}
 
-	s.checkMinter(ctx, router, acc, known.StonFiRouter, &desc, args)
+	exec, err := s.emulateGetMethod(ctx, &desc, router, args)
+	if err != nil {
+		log.Error().Err(err).Msgf("execute %s %s get-method", desc.Name, known.StonFiRouter)
+		return
+	}
+
+	exec.Address = &router.Address
+
+	appendGetMethodExecution(acc, known.StonFiRouter, &exec)
+	if exec.Error != "" {
+		log.Error().Str("exec_error", exec.Error).Msgf("execute %s %s get-method", desc.Name, known.StonFiRouter)
+		return
+	}
+
+	itemAddr := addr.MustFromTonutils(exec.Returns[0].(*address.Address)) //nolint:forcetypeassert // panic on wrong interface
+	if addr.Equal(itemAddr, &acc.Address) {
+		acc.Fake = false
+	}
+
+	if !acc.Fake {
+		s.itemsMinterCache.Put(acc.Address, router.Address)
+	}
 }
 
 func (s *Service) callGetMethod(
@@ -295,31 +304,8 @@ func (s *Service) callGetMethod(
 	}
 
 	switch getMethodDesc.Name {
-	case "get_collection_data":
-		acc.OwnerAddress = addr.MustFromTonutils(exec.Returns[2].(*address.Address)) //nolint:forcetypeassert // panic on wrong interface
-		mapContentDataNFT(acc, exec.Returns[1])
-
-	case "get_nft_data":
-		acc.MinterAddress = addr.MustFromTonutils(exec.Returns[2].(*address.Address)) //nolint:forcetypeassert // panic on wrong interface
-		acc.OwnerAddress = addr.MustFromTonutils(exec.Returns[3].(*address.Address))  //nolint:forcetypeassert // panic on wrong interface
-
-		if acc.MinterAddress == nil {
-			return nil
-		}
-
-		collection, err := others(ctx, *acc.MinterAddress)
-		if err != nil {
-			log.Error().Str("minter_address", acc.MinterAddress.Base64()).Err(err).Msg("get nft collection state")
-			return nil
-		}
-
-		index, individualContent := new(big.Int).SetBytes(exec.Returns[1].([]byte)), exec.Returns[4].(*cell.Cell) //nolint:forcetypeassert // panic on wrong interface
-
-		s.getNFTItemContent(ctx, collection, index, individualContent, acc)
-		s.checkNFTMinter(ctx, collection, index, acc)
-
 	case "get_jetton_data":
-		mapContentDataNFT(acc, exec.Returns[3])
+		// no action needed after NFT removal
 
 	case "get_wallet_data":
 		acc.JettonBalance = bunbig.FromMathBig(exec.Returns[0].(*big.Int))            //nolint:forcetypeassert // panic on wrong interface
@@ -330,13 +316,7 @@ func (s *Service) callGetMethod(
 			return nil
 		}
 
-		minter, err := others(ctx, *acc.MinterAddress)
-		if err != nil {
-			log.Error().Str("minter_address", acc.MinterAddress.Base64()).Err(err).Msg("get jetton minter state")
-			return nil
-		}
-
-		s.checkJettonMinter(ctx, minter, acc.OwnerAddress, acc)
+		s.checkJettonMinter(ctx, acc.OwnerAddress, acc, others)
 	}
 
 	return nil
@@ -348,6 +328,8 @@ func (s *Service) callPossibleGetMethods(
 	others func(context.Context, addr.Address) (*core.AccountState, error),
 	interfaces []*core.ContractInterface,
 ) {
+	defer core.Timer(time.Now(), "callPossibleGetMethods(%s, %v)", acc.Address.Base64(), acc.Types)
+
 	for _, i := range interfaces {
 		for it := range i.GetMethodsDesc {
 			d := &i.GetMethodsDesc[it]

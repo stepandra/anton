@@ -42,7 +42,7 @@ func TestRepository_FilterTransactions(t *testing.T) {
 
 	t.Run("filter by hash", func(t *testing.T) {
 		res, err := repo.FilterTransactions(ctx, &filter.TransactionsReq{
-			Hash: transactions[0].Hash,
+			Hash: transactions[0].Hash, Count: true,
 		})
 		require.Nil(t, err)
 		require.Equal(t, 1, res.Total)
@@ -51,7 +51,7 @@ func TestRepository_FilterTransactions(t *testing.T) {
 
 	t.Run("filter by incoming message hash", func(t *testing.T) {
 		res, err := repo.FilterTransactions(ctx, &filter.TransactionsReq{
-			InMsgHash: transactions[0].InMsgHash,
+			InMsgHash: transactions[0].InMsgHash, Count: true,
 		})
 		require.Nil(t, err)
 		require.Equal(t, 1, res.Total)
@@ -60,7 +60,7 @@ func TestRepository_FilterTransactions(t *testing.T) {
 
 	t.Run("filter by addresses", func(t *testing.T) {
 		res, err := repo.FilterTransactions(ctx, &filter.TransactionsReq{
-			Addresses: []*addr.Address{&transactions[0].Address},
+			Addresses: []*addr.Address{&transactions[0].Address}, Count: true,
 		})
 		require.Nil(t, err)
 		require.Equal(t, 1, res.Total)
@@ -74,6 +74,7 @@ func TestRepository_FilterTransactions(t *testing.T) {
 				Shard:     transactions[0].Shard,
 				SeqNo:     transactions[0].BlockSeqNo,
 			},
+			Count: true,
 		})
 		require.Nil(t, err)
 		require.Equal(t, 1, res.Total)
@@ -85,6 +86,7 @@ func TestRepository_FilterTransactions(t *testing.T) {
 			Workchain: new(int32),
 			Order:     "ASC",
 			Limit:     len(transactions),
+			Count:     true,
 		})
 		require.Nil(t, err)
 		require.Equal(t, len(transactions), res.Total)

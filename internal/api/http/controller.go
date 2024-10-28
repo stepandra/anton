@@ -11,7 +11,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 
-	"github.com/tonindexer/anton/abi"
+	"github.com/stepandra/anton/abi"
 	"github.com/tonindexer/anton/addr"
 	"github.com/tonindexer/anton/internal/app"
 	"github.com/tonindexer/anton/internal/core"
@@ -222,13 +222,14 @@ func (c *Controller) GetDefinitions(ctx *gin.Context) {
 //	@Tags			block
 //	@Accept			json
 //	@Produce		json
-//	@Param   		workchain     		query   int 	false   "workchain"					default(-1)
+//	@Param   		workchain     		query   int 	false   "workchain"						default(-1)
 //	@Param   		shard	     		query   int64 	false   "shard"
 //	@Param   		seq_no	     		query   int 	false   "seq_no"
-//	@Param   		with_transactions	query	bool  	false	"include transactions"		default(false)
-//	@Param			order				query	string	false	"order by seq_no"			Enums(ASC, DESC) default(DESC)
+//	@Param   		with_transactions	query	bool  	false	"include transactions"			default(false)
+//	@Param			order				query	string	false	"order by seq_no"				Enums(ASC, DESC) default(DESC)
 //	@Param   		after	     		query   int 	false	"start from this seq_no"
-//	@Param   		limit	     		query   int 	false	"limit"						default(3) maximum(100)
+//	@Param   		limit	     		query   int 	false	"limit"							default(3) maximum(100)
+//	@Param   		count	     		query   bool 	false	"count total number of rows"	default(false)
 //	@Success		200		{object}	filter.BlocksRes
 //	@Router			/blocks [get]
 func (c *Controller) GetBlocks(ctx *gin.Context) {
@@ -344,6 +345,7 @@ func (c *Controller) GetLabels(ctx *gin.Context) {
 //	@Param			order				query	string		false	"order by last_tx_lt"						Enums(ASC, DESC) default(DESC)
 //	@Param   		after	     		query   int 		false	"start from this last_tx_lt"
 //	@Param   		limit	     		query   int 		false	"limit"										default(3) maximum(10000)
+//	@Param   		count	     		query   bool 		false	"count total number of rows"				default(false)
 //	@Success		200		{object}	filter.AccountsRes
 //	@Router			/accounts [get]
 func (c *Controller) GetAccounts(ctx *gin.Context) {
@@ -490,6 +492,7 @@ func (c *Controller) AggregateAccountsHistory(ctx *gin.Context) {
 //	@Param			order				query	string		false	"order by created_lt"			Enums(ASC, DESC) default(DESC)
 //	@Param   		after	     		query   int 		false	"start from this created_lt"
 //	@Param   		limit	     		query   int 		false	"limit"							default(3) maximum(10000)
+//	@Param   		count	     		query   bool 		false	"count total number of rows"	default(false)
 //	@Success		200		{object}	filter.TransactionsRes
 //	@Router			/transactions [get]
 func (c *Controller) GetTransactions(ctx *gin.Context) {
@@ -597,6 +600,7 @@ func (c *Controller) AggregateTransactionsHistory(ctx *gin.Context) {
 //	@Param			order				query	string		false	"order by created_lt"						Enums(ASC, DESC) default(DESC)
 //	@Param   		after	     		query   int 		false	"start from this created_lt"
 //	@Param   		limit	     		query   int 		false	"limit"										default(3) maximum(10000)
+//	@Param   		count	     		query   bool 		false	"count total number of rows"				default(false)
 //	@Success		200		{object}	filter.MessagesRes
 //	@Router			/messages [get]
 func (c *Controller) GetMessages(ctx *gin.Context) {

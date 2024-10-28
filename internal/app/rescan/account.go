@@ -8,15 +8,15 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 
-	"github.com/tonindexer/anton/abi"
-	"github.com/tonindexer/anton/abi/known"
+	"github.com/stepandra/anton/abi"
+	"github.com/stepandra/anton/abi/known"
 	"github.com/tonindexer/anton/addr"
 	"github.com/tonindexer/anton/internal/app"
 	"github.com/tonindexer/anton/internal/core"
 )
 
 func (s *Service) getRecentAccountState(ctx context.Context, a addr.Address, lastLT uint64) (*core.AccountState, error) {
-	defer app.TimeTrack(time.Now(), "getRecentAccountState(%s, %d)", a.String(), lastLT)
+	defer core.Timer(time.Now(), "getRecentAccountState(%s, %d)", a.String(), lastLT)
 
 	if minter, ok := s.minterStateCache.get(a, lastLT); ok {
 		return minter, nil

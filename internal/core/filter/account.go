@@ -3,7 +3,7 @@ package filter
 import (
 	"context"
 
-	"github.com/tonindexer/anton/abi"
+	"github.com/stepandra/anton/abi"
 	"github.com/tonindexer/anton/addr"
 	"github.com/tonindexer/anton/internal/core"
 )
@@ -45,10 +45,11 @@ type AccountsReq struct {
 
 	AfterTxLT *uint64 `form:"after"`
 	Limit     int     `form:"limit"`
+	Count     bool    `form:"count"`
 }
 
 type AccountsRes struct {
-	Total int                  `json:"total"`
+	Total int                  `json:"total,omitempty"`
 	Rows  []*core.AccountState `json:"results"`
 }
 

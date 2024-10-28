@@ -1,0 +1,324 @@
+[
+  {
+    "interface_name": "gaspump_jetton",
+    "code_boc": "",
+    "definitions": {},
+    "in_messages": [
+      {
+        "op_name": "BondingCurveBuy",
+        "op_code": "0x6cd3e4b0",
+        "type": "internal",
+        "body": [
+          {
+            "name": "doBuy",
+            "tlb_type": "bool",
+            "format": "bool"
+          }
+        ]
+      },
+      {
+        "op_name": "BondingCurveBuyWithSlippage",
+        "op_code": "0x6cd3e4b0",
+        "type": "internal",
+        "body": [
+          {
+            "name": "doBuy",
+            "tlb_type": "bool",
+            "format": "bool"
+          },
+          {
+            "name": "limit",
+            "tlb_type": "maybe int257",
+            "format": "bigInt",
+            "optional": true
+          }
+        ]
+      },
+      {
+        "op_name": "TokenBurnNotification",
+        "op_code": "0x7bdd97de",
+        "type": "internal",
+        "body": [
+          {
+            "name": "queryId",
+            "tlb_type": "## 64",
+            "format": "uint64"
+          },
+          {
+            "name": "amount",
+            "tlb_type": "coins",
+            "format": "coins"
+          },
+          {
+            "name": "owner",
+            "tlb_type": "addr",
+            "format": "addr"
+          },
+          {
+            "name": "response_destination",
+            "tlb_type": "maybe addr",
+            "format": "addr",
+            "optional": true
+          }
+        ]
+      }
+    ],
+    "out_messages": [
+      {
+        "op_name": "DeployEmitEvent",
+        "op_code": "0x67617300",
+        "type": "external_out",
+        "body": [
+          {
+            "name": "from",
+            "tlb_type": "addr",
+            "format": "addr"
+          }
+        ]
+      },
+      {
+        "op_name": "DeployAndBuyEmitEvent",
+        "op_code": "0x67617301",
+        "type": "external_out",
+        "body": [
+          {
+            "name": "from",
+            "tlb_type": "addr",
+            "format": "addr"
+          },
+          {
+            "name": "inputTonAmount",
+            "tlb_type": "coins",
+            "format": "coins"
+          },
+          {
+            "name": "tonAmount",
+            "tlb_type": "coins",
+            "format": "coins"
+          },
+          {
+            "name": "jettonAmount",
+            "tlb_type": "coins",
+            "format": "coins"
+          },
+          {
+            "name": "feeTonAmount",
+            "tlb_type": "coins",
+            "format": "coins"
+          },
+          {
+            "name": "bondingCurveOverflow",
+            "tlb_type": "bool",
+            "format": "bool"
+          }
+        ]
+      },
+      {
+        "op_name": "BuyEmitEvent",
+        "op_code": "0x67617302",
+        "type": "external_out",
+        "body": [
+          {
+            "name": "from",
+            "tlb_type": "addr",
+            "format": "addr"
+          },
+          {
+            "name": "inputTonAmount",
+            "tlb_type": "coins",
+            "format": "coins"
+          },
+          {
+            "name": "tonAmount",
+            "tlb_type": "coins",
+            "format": "coins"
+          },
+          {
+            "name": "jettonAmount",
+            "tlb_type": "coins",
+            "format": "coins"
+          },
+          {
+            "name": "feeTonAmount",
+            "tlb_type": "coins",
+            "format": "coins"
+          },
+          {
+            "name": "bondingCurveOverflow",
+            "tlb_type": "bool",
+            "format": "bool"
+          }
+        ]
+      },
+      {
+        "op_name": "SellEmitEvent",
+        "op_code": "0x67617303",
+        "type": "external_out",
+        "body": [
+          {
+            "name": "from",
+            "tlb_type": "addr",
+            "format": "addr"
+          },
+          {
+            "name": "tonAmount",
+            "tlb_type": "coins",
+            "format": "coins"
+          },
+          {
+            "name": "jettonAmount",
+            "tlb_type": "coins",
+            "format": "coins"
+          },
+          {
+            "name": "feeTonAmount",
+            "tlb_type": "coins",
+            "format": "coins"
+          }
+        ]
+      },
+      {
+        "op_name": "UnwrapEmitEvent",
+        "op_code": "0x67617304",
+        "type": "external_out",
+        "body": [
+          {
+            "name": "from",
+            "tlb_type": "addr",
+            "format": "addr"
+          },
+          {
+            "name": "jettonAmount",
+            "tlb_type": "coins",
+            "format": "coins"
+          }
+        ]
+      }
+    ],
+    "get_methods": [
+      {
+        "name": "get_full_jetton_data",
+        "arguments": [],
+        "return_values": [
+          {
+            "name": "totalSupply",
+            "stack_type": "int",
+            "format": "uint256"
+          },
+          {
+            "name": "mintable",
+            "stack_type": "int",
+            "format": "bool"
+          },
+          {
+            "name": "owner",
+            "stack_type": "slice",
+            "format": "addr"
+          },
+          {
+            "name": "content",
+            "stack_type": "cell",
+            "format": "cell"
+          },
+          {
+            "name": "walletCode",
+            "stack_type": "cell",
+            "format": "cell"
+          },
+          {
+            "name": "tradeState",
+            "stack_type": "int",
+            "format": "uint256"
+          },
+          {
+            "name": "bondingCurveBalance",
+            "stack_type": "int",
+            "format": "uint256"
+          },
+          {
+            "name": "commissionBalance",
+            "stack_type": "int",
+            "format": "uint256"
+          },
+          {
+            "name": "version",
+            "stack_type": "int",
+            "format": "uint256"
+          },
+          {
+            "name": "bondingCurveParams",
+            "stack_type": "cell",
+            "format": "struct",
+            "struct_fields": [
+              {
+                "name": "mathScale",
+                "tlb_type": "uint256",
+                "format": "uint256"
+              },
+              {
+                "name": "coinScale",
+                "tlb_type": "uint256",
+                "format": "uint256"
+              },
+              {
+                "name": "initVirtualTonReserve",
+                "tlb_type": "uint256",
+                "format": "uint256"
+              },
+              {
+                "name": "initVirtualJettonReserve",
+                "tlb_type": "uint256",
+                "format": "uint256"
+              },
+              {
+                "name": "maxSupply",
+                "tlb_type": "coins",
+                "format": "coins"
+              },
+              {
+                "name": "bondingCurveMaxSupply",
+                "tlb_type": "coins",
+                "format": "coins"
+              },
+              {
+                "name": "maxTonAmount",
+                "tlb_type": "coins",
+                "format": "coins"
+              },
+              {
+                "name": "dexFeeAmount",
+                "tlb_type": "coins",
+                "format": "coins"
+              }
+            ]
+          },
+          {
+            "name": "commissionPromille",
+            "stack_type": "int",
+            "format": "uint256"
+          },
+          {
+            "name": "tonBalance",
+            "stack_type": "int",
+            "format": "uint256"
+          },
+          {
+            "name": "priceNanotons",
+            "stack_type": "int",
+            "format": "uint256"
+          },
+          {
+            "name": "supplyLeft",
+            "stack_type": "int",
+            "format": "uint256"
+          },
+          {
+            "name": "maxSupply",
+            "stack_type": "int",
+            "format": "uint256"
+          }
+        ]
+      }
+    ]
+  }
+]

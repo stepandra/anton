@@ -24,10 +24,11 @@ type BlocksReq struct {
 
 	AfterSeqNo *uint32 `form:"after"`
 	Limit      int     `form:"limit"`
+	Count      bool    `form:"count"`
 }
 
 type BlocksRes struct {
-	Total int           `json:"total"`
+	Total int           `json:"total,omitempty"`
 	Rows  []*core.Block `json:"results"`
 }
 

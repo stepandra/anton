@@ -50,7 +50,7 @@ func TestRepository_FilterMessages(t *testing.T) {
 		expected := *messages[0]
 
 		res, err := repo.FilterMessages(ctx, &filter.MessagesReq{
-			Hash: messages[0].Hash,
+			Hash: messages[0].Hash, Count: true,
 		})
 		require.Nil(t, err)
 		require.Equal(t, 1, res.Total)
@@ -62,7 +62,7 @@ func TestRepository_FilterMessages(t *testing.T) {
 
 	t.Run("filter by address", func(t *testing.T) {
 		res, err := repo.FilterMessages(ctx, &filter.MessagesReq{
-			DstAddresses: []*addr.Address{&messages[0].DstAddress},
+			DstAddresses: []*addr.Address{&messages[0].DstAddress}, Count: true,
 		})
 		require.Nil(t, err)
 		require.Equal(t, 1, res.Total)
@@ -71,7 +71,7 @@ func TestRepository_FilterMessages(t *testing.T) {
 
 	t.Run("filter by contract", func(t *testing.T) {
 		res, err := repo.FilterMessages(ctx, &filter.MessagesReq{
-			DstContracts: []string{"special"},
+			DstContracts: []string{"special"}, Count: true,
 		})
 		require.Nil(t, err)
 		require.Equal(t, 1, res.Total)
@@ -83,7 +83,7 @@ func TestRepository_FilterMessages(t *testing.T) {
 
 	t.Run("filter by operation name", func(t *testing.T) {
 		res, err := repo.FilterMessages(ctx, &filter.MessagesReq{
-			OperationNames: []string{"special_op"},
+			OperationNames: []string{"special_op"}, Count: true,
 		})
 		require.Nil(t, err)
 		require.Equal(t, 1, res.Total)

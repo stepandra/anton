@@ -9,7 +9,7 @@ import (
 	"github.com/uptrace/go-clickhouse/ch"
 	"github.com/xssnick/tonutils-go/tlb"
 
-	"github.com/tonindexer/anton/abi"
+	"github.com/stepandra/anton/abi"
 	"github.com/tonindexer/anton/addr"
 )
 
@@ -38,14 +38,6 @@ type AddressLabel struct {
 	Categories []LabelCategory `ch:",lc" bun:"type:label_category[]" json:"categories,omitempty"`
 }
 
-type NFTContentData struct {
-	ContentURI         string `ch:"type:String" bun:",nullzero" json:"content_uri,omitempty"`
-	ContentName        string `ch:"type:String" bun:",nullzero" json:"content_name,omitempty"`
-	ContentDescription string `ch:"type:String" bun:",nullzero" json:"content_description,omitempty"`
-	ContentImage       string `ch:"type:String" bun:",nullzero" json:"content_image,omitempty"`
-	ContentImageData   []byte `ch:"type:String" bun:",nullzero" json:"content_image_data,omitempty"`
-}
-
 type FTWalletData struct {
 	JettonBalance *bunbig.Int `ch:"type:UInt256" bun:"type:numeric" json:"jetton_balance,omitempty" swaggertype:"string"`
 }
@@ -53,6 +45,13 @@ type FTWalletData struct {
 type AccountStateID struct {
 	Address  addr.Address `ch:"type:String"`
 	LastTxLT uint64
+}
+
+type AccountBlockStateID struct {
+	Address    addr.Address `ch:"type:String"`
+	Workchain  int32
+	Shard      int64
+	BlockSeqNo uint32
 }
 
 type AccountState struct {
@@ -94,7 +93,6 @@ type AccountState struct {
 	ExecutedGetMethods map[abi.ContractName][]abi.GetMethodExecution `ch:"type:String" bun:"type:jsonb" json:"executed_get_methods,omitempty"`
 
 	// TODO: remove this
-	NFTContentData
 	FTWalletData
 
 	UpdatedAt time.Time `bun:"type:timestamp without time zone,notnull" json:"updated_at"`
@@ -151,6 +149,31 @@ func SkipAddress(a addr.Address) bool {
 		"EQDhIloDu1FWY9WFAgQDgw0RjuT5bLkf15Rmd5LCG3-0hyoe": // strange heavy testnet address
 		return true
 	case "EQAWBIxrfQDExJSfFmE5UL1r9drse0dQx_eaV8w9S77VK32F": // tongo emulator segmentation fault
+		return true
+	case "EQCnBscEi-KGfqJ5Wk6R83yrqtmUum94SXnSDz3AOQfHGjDw",
+		"EQA9xJgsYbsTjWxEcaxv8DLW3iRJtHzjwFzFAEWVxup0WH0R": // quackquack (?)
+		return true
+	case "EQCqNjAPkigLdS5gxHiHitWuzF3ZN-gX7MlX4Qfy2cGS3FWx": // ton-squid
+		return true
+	case "EQCp6qUScSUYB66ExDIlla8kfnUpP5cLZ_zhy4nlOPC-fqFo": // highload wallet v2 with heavy data
+		return true
+	case "EQC1Bq1GJY9ON_2WpSroVlXpejzfLNA8XoL2MYxtN50ZbJfN": // TryTON
+		return true
+	case "EQCTsnUmD2wvN-SBaa7CMF1sgTfC-YNywqbdPepKw34VBglS": // TryTON NFT collection
+		return true
+	case "EQCatS3EvWAhYaFEmLK_rOWViVgzN9RrHYh_PpNQ01X_WTPh": // TON lama jetton distribution
+		return true
+	case "EQBvc1QLuqTMx0NNTZ4DD__UzfTvkEOJMs67XoZhHVihWtMN": // POO jetton distribution
+		return true
+	case "EQDF6fj6ydJJX_ArwxINjP-0H8zx982W4XgbkKzGvceUWvXl": // ETH Token Bridge Collector
+		return true
+	case "EQCfrctTcgYp6cd2iqgAVKiLKauJvBNC4sc84xYBvspyw3q7",
+		"EQAlMRLTYOoG6kM0d3dLHqgK30ol3qIYwMNtEelktzXP_pD5",
+		"EQDa5wUCdTj1tqYV-LyIcefBHd3IGacvzhcBrSjmlKY2xnaK",
+		"EQAU35_2hAbymisgUrhGa4bIJUtEJjVNVS7zBrqfKaENd67N",
+		"EQCxr1o-x7cEFb3vALiYMOW7QPuAoGHMtw1Yab5m6HrnuIuZ",
+		"EQDCR0XQ0qNQJNjITRpo59mFsP0pjx81ImtXx92mJBnIc7m4",
+		"EQAYNJOQTA9FqZF4QGxzcPEvvMWkP76snfI7gATCur_86psC":
 		return true
 	default:
 		return false

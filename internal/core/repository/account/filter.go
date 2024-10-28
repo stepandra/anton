@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"strings"
+	"time"
 
 	"github.com/pkg/errors"
 	"github.com/uptrace/bun"
@@ -83,7 +84,7 @@ func flattenStateIDs(ids []*core.AccountStateID) (ret [][]any) {
 	return
 }
 
-func (r *Repository) filterAccountStates(ctx context.Context, f *filter.AccountsReq, total int) (ret []*core.AccountState, err error) { //nolint:gocyclo,gocognit // that's ok
+func (r *Repository) filterAccountStates(ctx context.Context, f *filter.AccountsReq) (ret []*core.AccountState, err error) { //nolint:gocyclo,gocognit // that's ok
 	var (
 		q                   *bun.SelectQuery
 		prefix, statesTable string
@@ -152,20 +153,14 @@ func (r *Repository) filterAccountStates(ctx context.Context, f *filter.Accounts
 		q = q.Order(statesTable + orderBy + " " + strings.ToUpper(f.Order))
 	}
 
-	if total < 100000 && f.LatestState {
-		// firstly, select all latest states, then apply limit
-		// https://ottertune.com/blog/how-to-fix-slow-postgresql-queries
-		rawQuery := "WITH q AS MATERIALIZED (?) SELECT * FROM q"
-		if f.Limit < total {
-			rawQuery += fmt.Sprintf(" LIMIT %d", f.Limit)
-		}
-		err = r.pg.NewRaw(rawQuery, q).Scan(ctx, &ret)
-	} else {
-		if f.Limit < total {
-			q = q.Limit(f.Limit)
-		}
-		err = q.Scan(ctx)
-	}
+	// if total < 100000 && f.LatestState {
+	// 	// firstly, select all latest states, then apply limit
+	// 	// https://ottertune.com/blog/how-to-fix-slow-postgresql-queries
+	// 	rawQuery := fmt.Sprintf("WITH q AS MATERIALIZED (?) SELECT * FROM q LIMIT %d", f.Limit)
+	// 	err = r.pg.NewRaw(rawQuery, q).Scan(ctx, &ret)
+	// } else {
+	err = q.Limit(f.Limit).Scan(ctx)
+	// }
 
 	if f.LatestState {
 		for _, a := range latest {
@@ -227,6 +222,8 @@ func (r *Repository) countAccountStates(ctx context.Context, f *filter.AccountsR
 }
 
 func (r *Repository) getCodeData(ctx context.Context, rows []*core.AccountState, excludeCode, excludeData bool) error { //nolint:gocognit,gocyclo // TODO: make one function working for both code and data
+	defer core.Timer(time.Now(), "getCodeData(%d, %t, %t)", len(rows), excludeCode, excludeData)
+
 	codeHashesSet, dataHashesSet := map[string]struct{}{}, map[string]struct{}{}
 	for _, row := range rows {
 		if !excludeCode && len(row.Code) == 0 && len(row.CodeHash) == 32 {
@@ -304,15 +301,17 @@ func (r *Repository) FilterAccounts(ctx context.Context, f *filter.AccountsReq) 
 		f.Limit = 3
 	}
 
-	res.Total, err = r.countAccountStates(ctx, f)
-	if err != nil && !errors.Is(err, core.ErrNotImplemented) {
-		return res, errors.Wrap(err, "count account states")
-	}
-	if res.Total == 0 && !errors.Is(err, core.ErrNotImplemented) {
-		return res, nil
+	if f.Count {
+		res.Total, err = r.countAccountStates(ctx, f)
+		if err != nil && !errors.Is(err, core.ErrNotImplemented) {
+			return res, errors.Wrap(err, "count account states")
+		}
+		if res.Total == 0 && !errors.Is(err, core.ErrNotImplemented) {
+			return res, nil
+		}
 	}
 
-	res.Rows, err = r.filterAccountStates(ctx, f, res.Total)
+	res.Rows, err = r.filterAccountStates(ctx, f)
 	if err != nil {
 		return res, err
 	}

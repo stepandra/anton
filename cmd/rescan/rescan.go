@@ -13,7 +13,7 @@ import (
 	"github.com/xssnick/tonutils-go/liteclient"
 	"github.com/xssnick/tonutils-go/ton"
 
-	"github.com/tonindexer/anton/abi"
+	"github.com/stepandra/anton/abi"
 	"github.com/tonindexer/anton/internal/app"
 	"github.com/tonindexer/anton/internal/app/parser"
 	"github.com/tonindexer/anton/internal/app/rescan"
@@ -76,8 +76,9 @@ var Command = &cli.Command{
 		}
 
 		p := parser.NewService(&app.ParserConfig{
-			BlockchainConfig: bcConfig,
-			ContractRepo:     contractRepo,
+			BlockchainConfig:         bcConfig,
+			ContractRepo:             contractRepo,
+			MaxAccountParsingWorkers: env.GetInt("MAX_ACCOUNT_PARSING_WORKERS", 96),
 		})
 		i := rescan.NewService(&app.RescanConfig{
 			ContractRepo: contractRepo,

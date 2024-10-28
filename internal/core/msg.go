@@ -10,7 +10,7 @@ import (
 	"github.com/uptrace/go-clickhouse/ch"
 	"github.com/xssnick/tonutils-go/tlb"
 
-	"github.com/tonindexer/anton/abi"
+	"github.com/stepandra/anton/abi"
 	"github.com/tonindexer/anton/addr"
 )
 
@@ -81,7 +81,6 @@ type MessageRepository interface {
 	AddMessages(ctx context.Context, tx bun.Tx, messages []*Message) error
 	UpdateMessages(ctx context.Context, messages []*Message) error
 
-	GetMessage(ctx context.Context, hash []byte) (*Message, error)
 	GetMessages(ctx context.Context, hash [][]byte) ([]*Message, error)
 
 	// MatchMessagesByOperationDesc returns hashes of suitable messages for the given contract operation.

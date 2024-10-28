@@ -10,7 +10,7 @@ import (
 	"github.com/xssnick/tonutils-go/ton"
 	"github.com/xssnick/tonutils-go/tvm/cell"
 
-	"github.com/tonindexer/anton/abi"
+	"github.com/stepandra/anton/abi"
 	"github.com/tonindexer/anton/addr"
 	"github.com/tonindexer/anton/internal/core"
 )
@@ -23,6 +23,8 @@ var (
 type ParserConfig struct {
 	BlockchainConfig *cell.Cell
 	ContractRepo     core.ContractRepository
+
+	MaxAccountParsingWorkers int
 }
 
 func GetBlockchainConfig(ctx context.Context, api ton.APIClientWrapped) (*cell.Cell, error) {

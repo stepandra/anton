@@ -28,10 +28,11 @@ type TransactionsReq struct {
 
 	AfterTxLT *uint64 `form:"after"`
 	Limit     int     `form:"limit"`
+	Count     bool    `form:"count"`
 }
 
 type TransactionsRes struct {
-	Total int                 `json:"total"`
+	Total int                 `json:"total,omitempty"`
 	Rows  []*core.Transaction `json:"results"`
 }
 
