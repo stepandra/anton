@@ -28,13 +28,3 @@ type AccountsRes struct {
 	OwnedBalance        []*core.OwnedItem   `json:"owned_balance"`
 }
 
-type UniqueOwner struct {
-	ItemAddress addr.Address `json:"item_address"`
-	OwnersCount int         `json:"owners_count"`
-}
-
-type OwnedItem struct {
-	OwnerAddress addr.Address `json:"owner_address"`
-	ItemsCount   int         `json:"items_count"`
-	Balance      *string      `json:"balance,omitempty"`
-}

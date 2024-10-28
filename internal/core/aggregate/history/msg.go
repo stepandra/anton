@@ -33,8 +33,8 @@ type MessagesReq struct {
 }
 
 type MessagesRes struct {
-	CountRes  `json:"count_results,omitempty"`
-	BigIntRes `json:"sum_results,omitempty"`
+	CountRes  `json:"count_results,omitempty" swaggertype:"object"`
+	BigIntRes `json:"sum_results,omitempty" swaggertype:"object"`
 }
 
 type MessageRepository interface {

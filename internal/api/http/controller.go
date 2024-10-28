@@ -146,6 +146,7 @@ func (c *Controller) GetStatistics(ctx *gin.Context) {
 	ctx.IndentedJSON(http.StatusOK, ret)
 }
 
+// GetInterfacesRes represents the response for GetInterfaces endpoint
 type GetInterfacesRes struct {
 	Total   int                       `json:"total"`
 	Results []*core.ContractInterface `json:"results"`
@@ -158,7 +159,7 @@ type GetInterfacesRes struct {
 //	@Tags			contract
 //	@Accept			json
 //	@Produce		json
-//	@Success		200		{object}		GetInterfacesRes
+//	@Success		200	{object}	GetInterfacesRes
 //	@Router			/contracts/interfaces [get]
 func (c *Controller) GetInterfaces(ctx *gin.Context) {
 	ret, err := c.svc.GetInterfaces(ctx)
@@ -403,6 +404,8 @@ func (c *Controller) GetAccounts(ctx *gin.Context) {
 //	@Param   		minter_address		query	string  	false	"NFT collection or FT master address"
 //	@Param   		limit	     		query   int 		false	"limit"									default(25) maximum(1000000)
 //	@Success		200		{object}	aggregate.AccountsRes
+//	@Failure		400		{object}	gin.H
+//	@Failure		500		{object}	gin.H
 //	@Router			/accounts/aggregated [get]
 func (c *Controller) AggregateAccounts(ctx *gin.Context) {
 	var req aggregate.AccountsReq

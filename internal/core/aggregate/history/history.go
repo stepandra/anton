@@ -17,13 +17,13 @@ type ReqParams struct {
 }
 
 type CountRes []struct {
-	Value     int
-	Timestamp time.Time
+	Value     int       `json:"value"`
+	Timestamp time.Time `json:"timestamp"`
 }
 
 type BigIntRes []struct {
-	Value     *bunbig.Int `ch:"type:UInt256"`
-	Timestamp time.Time
+	Value     *bunbig.Int `ch:"type:UInt256" json:"value" swaggertype:"string"`
+	Timestamp time.Time   `json:"timestamp"`
 }
 
 func GetRoundingFunction(interval time.Duration) (string, error) {
