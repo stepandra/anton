@@ -17,10 +17,10 @@ import (
 
 	"github.com/stepandra/anton/abi"
 	"github.com/stepandra/anton/abi/known"
-	"github.com/tonindexer/anton/addr"
-	"github.com/tonindexer/anton/internal/core"
-	"github.com/tonindexer/anton/internal/core/repository/contract"
-	"github.com/tonindexer/anton/internal/core/rndm"
+	"github.com/stepandra/anton/addr"
+	"github.com/stepandra/anton/internal/core"
+	"github.com/stepandra/anton/internal/core/repository/contract"
+	"github.com/stepandra/anton/internal/core/rndm"
 )
 
 var (

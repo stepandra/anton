@@ -3,7 +3,7 @@ package app
 import (
 	"github.com/xssnick/tonutils-go/ton"
 
-	"github.com/tonindexer/anton/internal/core/repository"
+	"github.com/stepandra/anton/internal/core/repository"
 )
 
 type IndexerConfig struct {

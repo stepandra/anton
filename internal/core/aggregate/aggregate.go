@@ -10,7 +10,7 @@ import (
 	"github.com/uptrace/go-clickhouse/ch"
 
 	"github.com/stepandra/anton/abi"
-	"github.com/tonindexer/anton/internal/core"
+	"github.com/stepandra/anton/internal/core"
 )
 
 type AddressStatusCount struct {

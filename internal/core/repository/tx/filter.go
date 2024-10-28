@@ -7,8 +7,8 @@ import (
 	"github.com/uptrace/bun"
 	"github.com/uptrace/go-clickhouse/ch"
 
-	"github.com/tonindexer/anton/internal/core"
-	"github.com/tonindexer/anton/internal/core/filter"
+	"github.com/stepandra/anton/internal/core"
+	"github.com/stepandra/anton/internal/core/filter"
 )
 
 func (r *Repository) filterTx(ctx context.Context, req *filter.TransactionsReq) (ret []*core.Transaction, err error) {

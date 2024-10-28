@@ -10,9 +10,9 @@ import (
 
 	"github.com/stepandra/anton/abi"
 	"github.com/stepandra/anton/abi/known"
-	"github.com/tonindexer/anton/addr"
-	"github.com/tonindexer/anton/internal/app"
-	"github.com/tonindexer/anton/internal/core"
+	"github.com/stepandra/anton/addr"
+	"github.com/stepandra/anton/internal/app"
+	"github.com/stepandra/anton/internal/core"
 )
 
 func (s *Service) getRecentAccountState(ctx context.Context, a addr.Address, lastLT uint64) (*core.AccountState, error) {

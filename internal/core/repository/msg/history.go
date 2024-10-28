@@ -7,8 +7,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/uptrace/go-clickhouse/ch"
 
-	"github.com/tonindexer/anton/internal/core"
-	"github.com/tonindexer/anton/internal/core/aggregate/history"
+	"github.com/stepandra/anton/internal/core"
+	"github.com/stepandra/anton/internal/core/aggregate/history"
 )
 
 func addMessagesHistoryFilters(q *ch.SelectQuery, req *history.MessagesReq) *ch.SelectQuery {

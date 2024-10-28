@@ -7,8 +7,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/uptrace/bun"
 
-	"github.com/tonindexer/anton/internal/core"
-	"github.com/tonindexer/anton/internal/core/filter"
+	"github.com/stepandra/anton/internal/core"
+	"github.com/stepandra/anton/internal/core/filter"
 )
 
 func loadTransactions(q *bun.SelectQuery, prefix string, f *filter.BlocksReq) *bun.SelectQuery {

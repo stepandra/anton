@@ -11,7 +11,7 @@ import (
 	"github.com/xssnick/tonutils-go/tlb"
 
 	"github.com/stepandra/anton/abi"
-	"github.com/tonindexer/anton/addr"
+	"github.com/stepandra/anton/addr"
 )
 
 type MessageType string

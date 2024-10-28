@@ -3,7 +3,7 @@ package history
 import (
 	"context"
 
-	"github.com/tonindexer/anton/addr"
+	"github.com/stepandra/anton/addr"
 )
 
 type MessageMetric string

@@ -14,10 +14,10 @@ import (
 	"github.com/uptrace/bun/driver/pgdriver"
 	"github.com/uptrace/go-clickhouse/ch"
 
-	"github.com/tonindexer/anton/internal/core"
-	"github.com/tonindexer/anton/internal/core/repository/block"
-	"github.com/tonindexer/anton/internal/core/repository/tx"
-	"github.com/tonindexer/anton/internal/core/rndm"
+	"github.com/stepandra/anton/internal/core"
+	"github.com/stepandra/anton/internal/core/repository/block"
+	"github.com/stepandra/anton/internal/core/repository/tx"
+	"github.com/stepandra/anton/internal/core/rndm"
 )
 
 var (

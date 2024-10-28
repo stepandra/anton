@@ -10,7 +10,7 @@ import (
 	"github.com/xssnick/tonutils-go/address"
 
 	"github.com/stepandra/anton/abi"
-	"github.com/tonindexer/anton/addr"
+	"github.com/stepandra/anton/addr"
 )
 
 func TestGetMethodDesc_Wallets(t *testing.T) {

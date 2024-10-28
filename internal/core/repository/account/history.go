@@ -9,8 +9,8 @@ import (
 
 	"github.com/stepandra/anton/abi"
 	"github.com/stepandra/anton/abi/known"
-	"github.com/tonindexer/anton/internal/core"
-	"github.com/tonindexer/anton/internal/core/aggregate/history"
+	"github.com/stepandra/anton/internal/core"
+	"github.com/stepandra/anton/internal/core/aggregate/history"
 )
 
 func getContractTypes(types []abi.ContractName) (ret []abi.ContractName) {

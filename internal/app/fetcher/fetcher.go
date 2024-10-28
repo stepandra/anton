@@ -3,9 +3,9 @@ package fetcher
 import (
 	"sync"
 
-	"github.com/tonindexer/anton/internal/app"
-	"github.com/tonindexer/anton/internal/core"
-	"github.com/tonindexer/anton/lru"
+	"github.com/stepandra/anton/internal/app"
+	"github.com/stepandra/anton/internal/core"
+	"github.com/stepandra/anton/lru"
 )
 
 var _ app.FetcherService = (*Service)(nil)

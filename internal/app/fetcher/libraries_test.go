@@ -9,7 +9,7 @@ import (
 	"github.com/xssnick/tonutils-go/tvm/cell"
 
 	"github.com/stepandra/anton/abi"
-	"github.com/tonindexer/anton/addr"
+	"github.com/stepandra/anton/addr"
 )
 
 func TestService_getAccountLibraries(t *testing.T) {

@@ -9,8 +9,8 @@ import (
 	"github.com/xssnick/tonutils-go/address"
 	"github.com/xssnick/tonutils-go/ton"
 
-	"github.com/tonindexer/anton/addr"
-	"github.com/tonindexer/anton/internal/core"
+	"github.com/stepandra/anton/addr"
+	"github.com/stepandra/anton/internal/core"
 )
 
 func (s *Service) getTransaction(ctx context.Context, master, b *ton.BlockIDExt, id ton.TransactionShortInfo) (*core.Transaction, error) {

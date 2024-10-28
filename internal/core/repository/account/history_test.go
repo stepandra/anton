@@ -8,8 +8,8 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/stepandra/anton/abi"
-	"github.com/tonindexer/anton/internal/core/aggregate/history"
-	"github.com/tonindexer/anton/internal/core/rndm"
+	"github.com/stepandra/anton/internal/core/aggregate/history"
+	"github.com/stepandra/anton/internal/core/rndm"
 )
 
 func TestRepository_AggregateAccountsHistory(t *testing.T) {

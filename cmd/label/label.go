@@ -12,10 +12,10 @@ import (
 
 	"gopkg.in/yaml.v2"
 
-	"github.com/tonindexer/anton/addr"
-	"github.com/tonindexer/anton/internal/core"
-	"github.com/tonindexer/anton/internal/core/repository"
-	"github.com/tonindexer/anton/internal/core/repository/account"
+	"github.com/stepandra/anton/addr"
+	"github.com/stepandra/anton/internal/core"
+	"github.com/stepandra/anton/internal/core/repository"
+	"github.com/stepandra/anton/internal/core/repository/account"
 )
 
 type tonscanLabel struct {

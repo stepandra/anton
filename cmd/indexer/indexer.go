@@ -18,15 +18,15 @@ import (
 	"github.com/xssnick/tonutils-go/ton"
 
 	"github.com/stepandra/anton/abi"
-	contractDesc "github.com/tonindexer/anton/cmd/contract"
-	"github.com/tonindexer/anton/internal/app"
-	"github.com/tonindexer/anton/internal/app/fetcher"
-	"github.com/tonindexer/anton/internal/app/indexer"
-	"github.com/tonindexer/anton/internal/app/parser"
-	"github.com/tonindexer/anton/internal/core"
-	"github.com/tonindexer/anton/internal/core/repository"
-	"github.com/tonindexer/anton/internal/core/repository/account"
-	"github.com/tonindexer/anton/internal/core/repository/contract"
+	contractDesc "github.com/stepandra/anton/cmd/contract"
+	"github.com/stepandra/anton/internal/app"
+	"github.com/stepandra/anton/internal/app/fetcher"
+	"github.com/stepandra/anton/internal/app/indexer"
+	"github.com/stepandra/anton/internal/app/parser"
+	"github.com/stepandra/anton/internal/core"
+	"github.com/stepandra/anton/internal/core/repository"
+	"github.com/stepandra/anton/internal/core/repository/account"
+	"github.com/stepandra/anton/internal/core/repository/contract"
 )
 
 func getAllKnownContractFilenames(contractsDir string) (res []string, err error) {

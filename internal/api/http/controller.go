@@ -12,12 +12,12 @@ import (
 	"github.com/rs/zerolog/log"
 
 	"github.com/stepandra/anton/abi"
-	"github.com/tonindexer/anton/addr"
-	"github.com/tonindexer/anton/internal/app"
-	"github.com/tonindexer/anton/internal/core"
-	"github.com/tonindexer/anton/internal/core/aggregate"
-	"github.com/tonindexer/anton/internal/core/aggregate/history"
-	"github.com/tonindexer/anton/internal/core/filter"
+	"github.com/stepandra/anton/addr"
+	"github.com/stepandra/anton/internal/app"
+	"github.com/stepandra/anton/internal/core"
+	"github.com/stepandra/anton/internal/core/aggregate"
+	"github.com/stepandra/anton/internal/core/aggregate/history"
+	"github.com/stepandra/anton/internal/core/filter"
 )
 
 // @title      		Anton

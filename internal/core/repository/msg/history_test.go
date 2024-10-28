@@ -9,8 +9,8 @@ import (
 
 	"github.com/uptrace/bun/extra/bunbig"
 
-	"github.com/tonindexer/anton/internal/core/aggregate/history"
-	"github.com/tonindexer/anton/internal/core/rndm"
+	"github.com/stepandra/anton/internal/core/aggregate/history"
+	"github.com/stepandra/anton/internal/core/rndm"
 )
 
 func TestRepository_AggregateMessagesHistory(t *testing.T) {
