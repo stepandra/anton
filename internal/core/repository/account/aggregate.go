@@ -43,10 +43,6 @@ func (r *Repository) aggregateAddressStatistics(ctx context.Context, req *aggreg
 	for _, x := range countByInterfaces {
 		for _, t := range x.Types {
 			switch t {
-			case known.NFTItem:
-				res.OwnedNFTItems += x.Count
-			case known.NFTCollection:
-				res.OwnedNFTCollections += x.Count
 			case known.JettonWallet:
 				res.OwnedJettonWallets += x.Count
 			}
@@ -95,7 +91,7 @@ func (r *Repository) aggregateNFTMinter(ctx context.Context, req *aggregate.Acco
 		Where("minter_address = ?", req.MinterAddress).
 		Group("item_address").
 		Order("owners_count DESC").
-		Limit(req.Limit).
+		Limit(int(req.Limit)).
 		Scan(ctx, &res.UniqueOwners)
 	if err != nil {
 		return errors.Wrap(err, "count unique owners of nft items")

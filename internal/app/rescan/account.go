@@ -77,15 +77,10 @@ func (s *Service) clearParsedAccountsData(task *core.RescanTask, acc *core.Accou
 	delete(acc.ExecutedGetMethods, task.ContractName)
 
 	switch task.ContractName {
-	case known.NFTCollection, known.NFTItem, known.JettonMinter, known.JettonWallet:
+	case known.JettonMinter, known.JettonWallet:
 		acc.MinterAddress = nil
 		acc.OwnerAddress = nil
 
-		acc.ContentURI = ""
-		acc.ContentName = ""
-		acc.ContentDescription = ""
-		acc.ContentImage = ""
-		acc.ContentImageData = nil
 
 		acc.Fake = false
 

@@ -67,7 +67,7 @@ func (s *Service) parseDirectedMessage(ctx context.Context, acc *core.AccountSta
 	default:
 		for _, op := range operations {
 			switch op.ContractName {
-			case known.NFTItem, known.NFTCollection, known.JettonMinter, known.JettonWallet:
+			case known.JettonMinter, known.JettonWallet:
 				// firstly, skip standard contracts
 			default:
 				if err := parseOperationAttempt(msg, op); err == nil {
