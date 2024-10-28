@@ -133,7 +133,7 @@ func (r *Repository) aggregateFTMinter(ctx context.Context, req *aggregate.Accou
 	err = r.makeLastItemOwnerQuery(req.MinterAddress).
 		ColumnExpr("argMax(jetton_balance, last_tx_lt) AS balance").
 		Order("balance DESC").
-		Limit(req.Limit).
+		Limit(int(req.Limit)).
 		Scan(ctx, &res.OwnedBalance)
 	if err != nil {
 		return errors.Wrap(err, "count jetton holders")
