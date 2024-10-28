@@ -22,9 +22,9 @@ import (
 	"github.com/urfave/cli/v2"
 
 	"github.com/stepandra/anton/abi"
-	"github.com/tonindexer/anton/internal/core"
-	"github.com/tonindexer/anton/internal/core/repository/contract"
-	"github.com/tonindexer/anton/internal/core/repository/rescan"
+	"github.com/stepandra/anton/internal/core"
+	"github.com/stepandra/anton/internal/core/repository/contract"
+	"github.com/stepandra/anton/internal/core/repository/rescan"
 )
 
 func dbConnect() (*bun.DB, error) {

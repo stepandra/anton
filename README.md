@@ -3,7 +3,7 @@
 This project is an open-source tool that extracts and organizes data from the TON blockchain, 
 efficiently storing it in PostgreSQL and ClickHouse databases.
 
-If you have any questions, you can ask them in the [Telegram group](https://t.me/tonindexer_chat).
+If you have any questions, you can ask them in the [Telegram group](https://t.me/stepandra_chat).
 
 ## Overview
 
@@ -68,7 +68,7 @@ To explore how Anton stores data, visit the [migrations' directory](/migrations)
 ### Cloning repository
 
 ```shell
-git clone https://github.com/tonindexer/anton
+git clone https://github.com/stepandra/anton
 cd anton
 ```
 
@@ -225,7 +225,7 @@ docker compose                      \
 ### Showing archive nodes from global config
 
 ```shell
-docker run tonindexer/anton archive [--testnet]
+docker run stepandra/anton archive [--testnet]
 ```
 
 ### Inserting contract interface

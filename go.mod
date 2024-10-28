@@ -1,4 +1,4 @@
-module github.com/tonindexer/anton
+module github.com/stepandra/anton
 
 go 1.19
 

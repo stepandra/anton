@@ -14,9 +14,9 @@ import (
 
 	"github.com/uptrace/go-clickhouse/ch"
 
-	"github.com/tonindexer/anton/internal/core"
-	"github.com/tonindexer/anton/internal/core/repository/msg"
-	"github.com/tonindexer/anton/internal/core/rndm"
+	"github.com/stepandra/anton/internal/core"
+	"github.com/stepandra/anton/internal/core/repository/msg"
+	"github.com/stepandra/anton/internal/core/rndm"
 )
 
 var (

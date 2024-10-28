@@ -7,7 +7,7 @@ import (
 	"github.com/uptrace/bun"
 
 	"github.com/stepandra/anton/abi"
-	"github.com/tonindexer/anton/addr"
+	"github.com/stepandra/anton/addr"
 )
 
 type RescanTaskType string

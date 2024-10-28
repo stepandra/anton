@@ -8,9 +8,9 @@ import (
 	"github.com/rs/zerolog/log"
 
 	"github.com/stepandra/anton/abi"
-	"github.com/tonindexer/anton/addr"
-	"github.com/tonindexer/anton/internal/app"
-	"github.com/tonindexer/anton/internal/core"
+	"github.com/stepandra/anton/addr"
+	"github.com/stepandra/anton/internal/app"
+	"github.com/stepandra/anton/internal/core"
 )
 
 func (s *Service) chooseInterfaces(updates map[uint64][]abi.ContractName, txLT uint64) (ret []abi.ContractName) {

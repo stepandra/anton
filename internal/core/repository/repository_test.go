@@ -8,17 +8,17 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/stepandra/anton/abi"
-	"github.com/tonindexer/anton/addr"
-	"github.com/tonindexer/anton/internal/core"
-	"github.com/tonindexer/anton/internal/core/aggregate"
-	"github.com/tonindexer/anton/internal/core/filter"
-	"github.com/tonindexer/anton/internal/core/repository"
-	"github.com/tonindexer/anton/internal/core/repository/account"
-	"github.com/tonindexer/anton/internal/core/repository/block"
-	"github.com/tonindexer/anton/internal/core/repository/contract"
-	"github.com/tonindexer/anton/internal/core/repository/msg"
-	"github.com/tonindexer/anton/internal/core/repository/tx"
-	"github.com/tonindexer/anton/internal/core/rndm"
+	"github.com/stepandra/anton/addr"
+	"github.com/stepandra/anton/internal/core"
+	"github.com/stepandra/anton/internal/core/aggregate"
+	"github.com/stepandra/anton/internal/core/filter"
+	"github.com/stepandra/anton/internal/core/repository"
+	"github.com/stepandra/anton/internal/core/repository/account"
+	"github.com/stepandra/anton/internal/core/repository/block"
+	"github.com/stepandra/anton/internal/core/repository/contract"
+	"github.com/stepandra/anton/internal/core/repository/msg"
+	"github.com/stepandra/anton/internal/core/repository/tx"
+	"github.com/stepandra/anton/internal/core/rndm"
 )
 
 var (

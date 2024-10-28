@@ -14,11 +14,11 @@ import (
 	"github.com/xssnick/tonutils-go/ton"
 
 	"github.com/stepandra/anton/abi"
-	"github.com/tonindexer/anton/internal/api/http"
-	"github.com/tonindexer/anton/internal/app"
-	"github.com/tonindexer/anton/internal/app/query"
-	"github.com/tonindexer/anton/internal/core/repository"
-	"github.com/tonindexer/anton/internal/core/repository/contract"
+	"github.com/stepandra/anton/internal/api/http"
+	"github.com/stepandra/anton/internal/app"
+	"github.com/stepandra/anton/internal/app/query"
+	"github.com/stepandra/anton/internal/core/repository"
+	"github.com/stepandra/anton/internal/core/repository/contract"
 )
 
 var Command = &cli.Command{

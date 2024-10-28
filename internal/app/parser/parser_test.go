@@ -11,8 +11,8 @@ import (
 
 	"github.com/stepandra/anton/abi"
 	"github.com/stepandra/anton/abi/known"
-	"github.com/tonindexer/anton/internal/app"
-	"github.com/tonindexer/anton/internal/core"
+	"github.com/stepandra/anton/internal/app"
+	"github.com/stepandra/anton/internal/core"
 )
 
 var ctx = context.Background()

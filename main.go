@@ -9,13 +9,13 @@ import (
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 
-	"github.com/tonindexer/anton/cmd/archive"
-	"github.com/tonindexer/anton/cmd/contract"
-	"github.com/tonindexer/anton/cmd/db"
-	"github.com/tonindexer/anton/cmd/indexer"
-	"github.com/tonindexer/anton/cmd/label"
-	"github.com/tonindexer/anton/cmd/rescan"
-	"github.com/tonindexer/anton/cmd/web"
+	"github.com/stepandra/anton/cmd/archive"
+	"github.com/stepandra/anton/cmd/contract"
+	"github.com/stepandra/anton/cmd/db"
+	"github.com/stepandra/anton/cmd/indexer"
+	"github.com/stepandra/anton/cmd/label"
+	"github.com/stepandra/anton/cmd/rescan"
+	"github.com/stepandra/anton/cmd/web"
 )
 
 func init() {

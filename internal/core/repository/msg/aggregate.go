@@ -6,8 +6,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/uptrace/go-clickhouse/ch"
 
-	"github.com/tonindexer/anton/internal/core"
-	"github.com/tonindexer/anton/internal/core/aggregate"
+	"github.com/stepandra/anton/internal/core"
+	"github.com/stepandra/anton/internal/core/aggregate"
 )
 
 func (r *Repository) AggregateMessages(ctx context.Context, req *aggregate.MessagesReq) (*aggregate.MessagesRes, error) {

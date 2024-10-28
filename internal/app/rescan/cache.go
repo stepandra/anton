@@ -5,9 +5,9 @@ import (
 
 	"github.com/rs/zerolog/log"
 
-	"github.com/tonindexer/anton/addr"
-	"github.com/tonindexer/anton/internal/core"
-	"github.com/tonindexer/anton/lru"
+	"github.com/stepandra/anton/addr"
+	"github.com/stepandra/anton/internal/core"
+	"github.com/stepandra/anton/lru"
 )
 
 const maxMinterStates int = 64

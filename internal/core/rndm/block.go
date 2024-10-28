@@ -3,7 +3,7 @@ package rndm
 import (
 	"time"
 
-	"github.com/tonindexer/anton/internal/core"
+	"github.com/stepandra/anton/internal/core"
 )
 
 var (

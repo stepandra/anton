@@ -8,9 +8,9 @@ import (
 	"github.com/pkg/errors"
 
 	"github.com/stepandra/anton/abi"
-	"github.com/tonindexer/anton/addr"
-	"github.com/tonindexer/anton/internal/app"
-	"github.com/tonindexer/anton/internal/core"
+	"github.com/stepandra/anton/addr"
+	"github.com/stepandra/anton/internal/app"
+	"github.com/stepandra/anton/internal/core"
 )
 
 func matchByAddress(acc *core.AccountState, addresses []*addr.Address) bool {

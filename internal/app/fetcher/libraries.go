@@ -8,8 +8,8 @@ import (
 	"github.com/xssnick/tonutils-go/tlb"
 	"github.com/xssnick/tonutils-go/tvm/cell"
 
-	"github.com/tonindexer/anton/addr"
-	"github.com/tonindexer/anton/internal/core"
+	"github.com/stepandra/anton/addr"
+	"github.com/stepandra/anton/internal/core"
 )
 
 type libDescription struct {

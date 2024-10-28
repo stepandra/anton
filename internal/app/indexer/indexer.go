@@ -7,13 +7,13 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 
-	"github.com/tonindexer/anton/internal/app"
-	"github.com/tonindexer/anton/internal/core"
-	"github.com/tonindexer/anton/internal/core/repository"
-	"github.com/tonindexer/anton/internal/core/repository/account"
-	"github.com/tonindexer/anton/internal/core/repository/block"
-	"github.com/tonindexer/anton/internal/core/repository/msg"
-	"github.com/tonindexer/anton/internal/core/repository/tx"
+	"github.com/stepandra/anton/internal/app"
+	"github.com/stepandra/anton/internal/core"
+	"github.com/stepandra/anton/internal/core/repository"
+	"github.com/stepandra/anton/internal/core/repository/account"
+	"github.com/stepandra/anton/internal/core/repository/block"
+	"github.com/stepandra/anton/internal/core/repository/msg"
+	"github.com/stepandra/anton/internal/core/repository/tx"
 )
 
 var _ app.IndexerService = (*Service)(nil)

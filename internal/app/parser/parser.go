@@ -3,9 +3,9 @@ package parser
 import (
 	"encoding/base64"
 
-	"github.com/tonindexer/anton/addr"
-	"github.com/tonindexer/anton/internal/app"
-	"github.com/tonindexer/anton/lru"
+	"github.com/stepandra/anton/addr"
+	"github.com/stepandra/anton/internal/app"
+	"github.com/stepandra/anton/lru"
 )
 
 var _ app.ParserService = (*Service)(nil)

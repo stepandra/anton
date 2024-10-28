@@ -8,7 +8,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/xssnick/tonutils-go/tlb"
 
-	"github.com/tonindexer/anton/addr"
+	"github.com/stepandra/anton/addr"
 )
 
 type ContractName string

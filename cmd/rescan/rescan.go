@@ -14,15 +14,15 @@ import (
 	"github.com/xssnick/tonutils-go/ton"
 
 	"github.com/stepandra/anton/abi"
-	"github.com/tonindexer/anton/internal/app"
-	"github.com/tonindexer/anton/internal/app/parser"
-	"github.com/tonindexer/anton/internal/app/rescan"
-	"github.com/tonindexer/anton/internal/core/repository"
-	"github.com/tonindexer/anton/internal/core/repository/account"
-	"github.com/tonindexer/anton/internal/core/repository/block"
-	"github.com/tonindexer/anton/internal/core/repository/contract"
-	"github.com/tonindexer/anton/internal/core/repository/msg"
-	rescanRepository "github.com/tonindexer/anton/internal/core/repository/rescan"
+	"github.com/stepandra/anton/internal/app"
+	"github.com/stepandra/anton/internal/app/parser"
+	"github.com/stepandra/anton/internal/app/rescan"
+	"github.com/stepandra/anton/internal/core/repository"
+	"github.com/stepandra/anton/internal/core/repository/account"
+	"github.com/stepandra/anton/internal/core/repository/block"
+	"github.com/stepandra/anton/internal/core/repository/contract"
+	"github.com/stepandra/anton/internal/core/repository/msg"
+	rescanRepository "github.com/stepandra/anton/internal/core/repository/rescan"
 )
 
 var Command = &cli.Command{

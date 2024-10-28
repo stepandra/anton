@@ -18,13 +18,13 @@ import (
 	"github.com/uptrace/bun/migrate"
 	"github.com/uptrace/go-clickhouse/chmigrate"
 
-	"github.com/tonindexer/anton/internal/core"
-	"github.com/tonindexer/anton/internal/core/filter"
-	"github.com/tonindexer/anton/internal/core/repository"
-	"github.com/tonindexer/anton/internal/core/repository/block"
+	"github.com/stepandra/anton/internal/core"
+	"github.com/stepandra/anton/internal/core/filter"
+	"github.com/stepandra/anton/internal/core/repository"
+	"github.com/stepandra/anton/internal/core/repository/block"
 
-	"github.com/tonindexer/anton/migrations/chmigrations"
-	"github.com/tonindexer/anton/migrations/pgmigrations"
+	"github.com/stepandra/anton/migrations/chmigrations"
+	"github.com/stepandra/anton/migrations/pgmigrations"
 )
 
 func newMigrators() (pg *migrate.Migrator, ch *chmigrate.Migrator, err error) {
