@@ -1,62 +1,196 @@
 [
   {
-    "interface_name": "bcl_jetton",
+    "interface_name": "bcl_master",
+    "addresses": ["EQDrB5FAongX_u-eWu7sHPv0knlnxfidzIxn5Q_ZC40loyDa"],
     "get_methods": [
       {
-        "name": "get_jetton_data",
+        "name": "get_factory_data",
         "return_values": [
-          { "name": "total_supply", "stack_type": "int", "format": "bigInt" },
-          { "name": "mintable", "stack_type": "int", "format": "bool" },
-          { "name": "admin_address", "stack_type": "slice", "format": "addr" },
-          { "name": "jetton_content", "stack_type": "cell" },
-          { "name": "jetton_wallet_code", "stack_type": "cell" }
-        ]
-      },
-      {
-        "name": "get_wallet_address",
-        "arguments": [
-          { "name": "owner_address", "stack_type": "slice", "format": "addr" }
-        ],
-        "return_values": [
-          { "name": "wallet_address", "stack_type": "slice", "format": "addr" }
-        ]
-      },
-      {
-        "name": "coin_price",
-        "return_values": [
-          { "name": "price", "stack_type": "int", "format": "bigInt" }
+          {
+            "name": "admin",
+            "stack_type": "slice",
+            "format": "addr"
+          },
+          {
+            "name": "deployment_fee",
+            "stack_type": "int",
+            "format": "bigInt"
+          },
+          {
+            "name": "coin_admin",
+            "stack_type": "slice",
+            "format": "addr"
+          },
+          {
+            "name": "coin_ttl",
+            "stack_type": "int",
+            "format": "uint32"
+          },
+          {
+            "name": "bcl_supply",
+            "stack_type": "int",
+            "format": "bigInt"
+          },
+          {
+            "name": "liq_supply",
+            "stack_type": "int",
+            "format": "bigInt"
+          },
+          {
+            "name": "fee_address",
+            "stack_type": "slice",
+            "format": "addr"
+          },
+          {
+            "name": "fee_numerator",
+            "stack_type": "int",
+            "format": "uint32"
+          },
+          {
+            "name": "fee_denominator",
+            "stack_type": "int",
+            "format": "uint32"
+          },
+          {
+            "name": "trading_close_fee",
+            "stack_type": "int",
+            "format": "bigInt"
+          },
+          {
+            "name": "full_price_ton",
+            "stack_type": "int",
+            "format": "bigInt"
+          },
+          {
+            "name": "full_price_ton_fees",
+            "stack_type": "int",
+            "format": "bigInt"
+          }
         ]
       },
       {
         "name": "coins_for_tons",
         "arguments": [
-          { "name": "tons", "stack_type": "int", "format": "coins" }
+          {
+            "name": "tons",
+            "stack_type": "int",
+            "format": "bigInt"
+          }
         ],
         "return_values": [
-          { "name": "fees", "stack_type": "int", "format": "coins" },
-          { "name": "coins", "stack_type": "int", "format": "coins" }
+          {
+            "name": "fees",
+            "stack_type": "int",
+            "format": "bigInt"
+          },
+          {
+            "name": "coins",
+            "stack_type": "int",
+            "format": "bigInt"
+          }
         ]
-      },
+      }
+    ],
+    "in_messages": [
       {
-        "name": "tons_for_coins",
-        "arguments": [
-          { "name": "coins", "stack_type": "int", "format": "coins" }
-        ],
+        "op_name": "deploy_coin",
+        "op_code": "0xD7AB4F41",
+        "body": [
+          {
+            "name": "query_id",
+            "tlb_type": "## 64",
+            "format": "uint64"
+          },
+          {
+            "name": "content",
+            "tlb_type": "^"
+          },
+          {
+            "name": "author_address",
+            "tlb_type": "addr",
+            "format": "addr"
+          },
+          {
+            "name": "referral",
+            "tlb_type": "^"
+          },
+          {
+            "name": "forward_body",
+            "tlb_type": "maybe ^"
+          }
+        ]
+      }
+    ],
+    "out_messages": []
+  },
+  {
+    "interface_name": "bcl_jetton",
+    "get_methods": [
+      {
+        "name": "get_jetton_data",
         "return_values": [
-          { "name": "fees", "stack_type": "int", "format": "coins" },
-          { "name": "tons", "stack_type": "int", "format": "coins" }
+          {
+            "name": "total_supply",
+            "stack_type": "int",
+            "format": "bigInt"
+          },
+          {
+            "name": "mintable",
+            "stack_type": "int",
+            "format": "bool"
+          },
+          {
+            "name": "admin_address",
+            "stack_type": "slice",
+            "format": "addr"
+          },
+          {
+            "name": "jetton_content",
+            "stack_type": "cell"
+          },
+          {
+            "name": "jetton_wallet_code",
+            "stack_type": "cell"
+          }
         ]
       },
       {
         "name": "get_bcl_data",
         "return_values": [
-          { "name": "total_supply", "stack_type": "int", "format": "bigInt" },
-          { "name": "bcl_supply", "stack_type": "int", "format": "bigInt" },
-          { "name": "liq_supply", "stack_type": "int", "format": "bigInt" },
-          { "name": "admin", "stack_type": "slice", "format": "addr" },
-          { "name": "author", "stack_type": "slice", "format": "addr" },
-          { "name": "content", "stack_type": "cell" },
-          { "name": "fee_address", "stack_type": "slice", "format": "addr" },
+          {
+            "name": "total_supply",
+            "stack_type": "int",
+            "format": "bigInt"
+          },
+          {
+            "name": "bcl_supply",
+            "stack_type": "int",
+            "format": "bigInt"
+          },
+          {
+            "name": "liq_supply",
+            "stack_type": "int",
+            "format": "bigInt"
+          },
+          {
+            "name": "admin",
+            "stack_type": "slice",
+            "format": "addr"
+          },
+          {
+            "name": "author",
+            "stack_type": "slice",
+            "format": "addr"
+          },
+          {
+            "name": "content",
+            "stack_type": "cell"
+          },
+          {
+            "name": "fee_address",
+            "stack_type": "slice",
+            "format": "addr"
+          },
           {
             "name": "trade_fee_numerator",
             "stack_type": "int",
@@ -67,35 +201,39 @@
             "stack_type": "int",
             "format": "uint32"
           },
-          { "name": "ttl", "stack_type": "int", "format": "uint32" },
+          {
+            "name": "ttl",
+            "stack_type": "int",
+            "format": "uint32"
+          },
           {
             "name": "last_trade_date",
             "stack_type": "int",
             "format": "uint32"
           },
-          { "name": "trading_enabled", "stack_type": "int", "format": "bool" },
+          {
+            "name": "trading_enabled",
+            "stack_type": "int",
+            "format": "bool"
+          },
           {
             "name": "ton_liq_collected",
             "stack_type": "int",
             "format": "bigInt"
           },
-          { "name": "referral", "stack_type": "cell" },
           {
-            "name": "trading_close_fee",
+            "name": "referral",
+            "stack_type": "cell"
+          }
+        ]
+      },
+      {
+        "name": "coin_price",
+        "return_values": [
+          {
+            "name": "price",
             "stack_type": "int",
             "format": "bigInt"
-          },
-          { "name": "full_price_ton", "stack_type": "int", "format": "bigInt" },
-          {
-            "name": "full_price_ton_fees",
-            "stack_type": "int",
-            "format": "bigInt"
-          },
-          { "name": "router_address", "stack_type": "slice", "format": "addr" },
-          {
-            "name": "router_pton_wallet_address",
-            "stack_type": "slice",
-            "format": "addr"
           }
         ]
       }
@@ -105,14 +243,24 @@
         "op_name": "buy",
         "op_code": "0xAF750D34",
         "body": [
-          { "name": "query_id", "tlb_type": "## 64", "format": "uint64" },
-          { "name": "min_receive", "tlb_type": ".", "format": "coins" },
-          { "name": "referral", "tlb_type": "maybe ^" },
+          {
+            "name": "query_id",
+            "tlb_type": "## 64",
+            "format": "uint64"
+          },
+          {
+            "name": "min_receive",
+            "tlb_type": ".",
+            "format": "coins"
+          },
+          {
+            "name": "referral",
+            "tlb_type": "maybe ^"
+          },
           {
             "name": "buyer_address",
-            "tlb_type": "addr",
-            "format": "addr",
-            "optional": true
+            "tlb_type": "maybe addr",
+            "format": "addr"
           }
         ]
       }
@@ -125,14 +273,26 @@
       {
         "name": "get_wallet_data",
         "return_values": [
-          { "name": "balance", "stack_type": "int", "format": "bigInt" },
-          { "name": "owner", "stack_type": "slice", "format": "addr" }
+          {
+            "name": "balance",
+            "stack_type": "int",
+            "format": "bigInt"
+          },
+          {
+            "name": "owner",
+            "stack_type": "slice",
+            "format": "addr"
+          }
         ]
       },
       {
         "name": "get_transfers_enabled",
         "return_values": [
-          { "name": "transfers_enabled", "stack_type": "int", "format": "bool" }
+          {
+            "name": "transfers_enabled",
+            "stack_type": "int",
+            "format": "bool"
+          }
         ]
       }
     ],
@@ -141,79 +301,36 @@
         "op_name": "sell",
         "op_code": "0x742B36D8",
         "body": [
-          { "name": "query_id", "tlb_type": "## 64", "format": "uint64" },
-          { "name": "amount", "tlb_type": ".", "format": "coins" },
-          { "name": "min_receive", "tlb_type": ".", "format": "coins" },
-          { "name": "referral", "tlb_type": "maybe ^" }
+          {
+            "name": "query_id",
+            "tlb_type": "## 64",
+            "format": "uint64"
+          },
+          {
+            "name": "amount",
+            "tlb_type": ".",
+            "format": "coins"
+          },
+          {
+            "name": "min_receive",
+            "tlb_type": ".",
+            "format": "coins"
+          },
+          {
+            "name": "referral",
+            "tlb_type": "maybe ^"
+          }
         ]
       },
       {
         "op_name": "unlock_wallet",
         "op_code": "0x9D65E47A",
         "body": [
-          { "name": "query_id", "tlb_type": "## 64", "format": "uint64" }
-        ]
-      }
-    ],
-    "out_messages": []
-  },
-  {
-    "interface_name": "bcl_master",
-    "get_methods": [
-      {
-        "name": "coins_for_tons",
-        "arguments": [
-          { "name": "tons", "stack_type": "int", "format": "coins" }
-        ],
-        "return_values": [
-          { "name": "fees", "stack_type": "int", "format": "coins" },
-          { "name": "coins", "stack_type": "int", "format": "coins" }
-        ]
-      },
-      {
-        "name": "get_factory_data",
-        "return_values": [
-          { "name": "admin", "stack_type": "slice", "format": "addr" },
-          { "name": "deployment_fee", "stack_type": "int", "format": "bigInt" },
-          { "name": "coin_admin", "stack_type": "slice", "format": "addr" },
-          { "name": "coin_ttl", "stack_type": "int", "format": "uint32" },
-          { "name": "bcl_supply", "stack_type": "int", "format": "bigInt" },
-          { "name": "liq_supply", "stack_type": "int", "format": "bigInt" },
-          { "name": "fee_address", "stack_type": "slice", "format": "addr" },
-          { "name": "fee_numerator", "stack_type": "int", "format": "uint32" },
           {
-            "name": "fee_denominator",
-            "stack_type": "int",
-            "format": "uint32"
-          },
-          {
-            "name": "trading_close_fee",
-            "stack_type": "int",
-            "format": "bigInt"
-          },
-          { "name": "full_price_ton", "stack_type": "int", "format": "bigInt" },
-          {
-            "name": "full_price_ton_fees",
-            "stack_type": "int",
-            "format": "bigInt"
-          },
-          { "name": "is_enabled", "stack_type": "int", "format": "bool" },
-          { "name": "seed", "stack_type": "int", "format": "bigInt" },
-          { "name": "coin_code", "stack_type": "cell" },
-          { "name": "wallet_code", "stack_type": "cell" }
-        ]
-      }
-    ],
-    "in_messages": [
-      {
-        "op_name": "deploy_coin",
-        "op_code": "0xD7AB4F41",
-        "body": [
-          { "name": "query_id", "tlb_type": "## 64", "format": "uint64" },
-          { "name": "content", "tlb_type": "^" },
-          { "name": "author_address", "tlb_type": "addr", "format": "addr" },
-          { "name": "referral", "tlb_type": "^" },
-          { "name": "forward_body", "tlb_type": "maybe ^" }
+            "name": "query_id",
+            "tlb_type": "## 64",
+            "format": "uint64"
+          }
         ]
       }
     ],

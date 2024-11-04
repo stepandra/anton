@@ -1,0 +1,295 @@
+[
+  {
+    "interface_name": "gaspump_jetton",
+    "get_methods": [
+      {
+        "name": "get_full_jetton_data",
+        "return_values": [
+          {
+            "name": "total_supply",
+            "stack_type": "int",
+            "format": "bigInt"
+          },
+          {
+            "name": "mintable",
+            "stack_type": "int",
+            "format": "bool"
+          },
+          {
+            "name": "owner",
+            "stack_type": "slice",
+            "format": "addr"
+          },
+          {
+            "name": "content",
+            "stack_type": "cell"
+          },
+          {
+            "name": "wallet_code",
+            "stack_type": "cell"
+          },
+          {
+            "name": "trade_state",
+            "stack_type": "int",
+            "format": "uint32"
+          },
+          {
+            "name": "bonding_curve_balance",
+            "stack_type": "int",
+            "format": "bigInt"
+          },
+          {
+            "name": "commission_balance",
+            "stack_type": "int",
+            "format": "bigInt"
+          },
+          {
+            "name": "version",
+            "stack_type": "int",
+            "format": "uint32"
+          },
+          {
+            "name": "bonding_curve_params",
+            "stack_type": "cell",
+            "format": "struct",
+            "struct_fields": [
+              {
+                "name": "math_scale",
+                "tlb_type": "uint256",
+                "format": "bigInt"
+              },
+              {
+                "name": "coin_scale",
+                "tlb_type": "uint256",
+                "format": "bigInt"
+              },
+              {
+                "name": "alpha",
+                "tlb_type": "uint256",
+                "format": "bigInt"
+              },
+              {
+                "name": "beta",
+                "tlb_type": "uint256",
+                "format": "bigInt"
+              },
+              {
+                "name": "max_supply",
+                "tlb_type": "coins",
+                "format": "coins"
+              },
+              {
+                "name": "bonding_curve_max_supply",
+                "tlb_type": "coins",
+                "format": "coins"
+              },
+              {
+                "name": "max_ton_amount",
+                "tlb_type": "coins",
+                "format": "coins"
+              },
+              {
+                "name": "dex_fee_amount",
+                "tlb_type": "coins",
+                "format": "coins"
+              }
+            ]
+          },
+          {
+            "name": "commission_promille",
+            "stack_type": "int",
+            "format": "uint32"
+          },
+          {
+            "name": "ton_balance",
+            "stack_type": "int",
+            "format": "bigInt"
+          },
+          {
+            "name": "price_nanotons",
+            "stack_type": "int",
+            "format": "bigInt"
+          },
+          {
+            "name": "supply_left",
+            "stack_type": "int",
+            "format": "bigInt"
+          },
+          {
+            "name": "max_supply",
+            "stack_type": "int",
+            "format": "bigInt"
+          }
+        ]
+      },
+      {
+        "name": "get_wallet_address",
+        "arguments": [
+          {
+            "name": "owner",
+            "stack_type": "slice",
+            "format": "addr"
+          }
+        ],
+        "return_values": [
+          {
+            "name": "wallet_address",
+            "stack_type": "slice",
+            "format": "addr"
+          }
+        ]
+      },
+      {
+        "name": "getBuyAmount",
+        "arguments": [
+          {
+            "name": "ton_amount",
+            "stack_type": "int",
+            "format": "bigInt"
+          }
+        ],
+        "return_values": [
+          {
+            "name": "jetton_amount",
+            "stack_type": "int",
+            "format": "bigInt"
+          }
+        ]
+      },
+      {
+        "name": "getSellAmount",
+        "arguments": [
+          {
+            "name": "jetton_amount",
+            "stack_type": "int",
+            "format": "bigInt"
+          }
+        ],
+        "return_values": [
+          {
+            "name": "ton_amount",
+            "stack_type": "int",
+            "format": "bigInt"
+          }
+        ]
+      }
+    ],
+    "in_messages": [
+      {
+        "op_name": "BondingCurveBuy",
+        "op_code": "0x6cd3e4b0",
+        "body": [
+          {
+            "name": "doBuy",
+            "tlb_type": "bool",
+            "format": "bool"
+          }
+        ]
+      },
+      {
+        "op_name": "TokenBurnNotification",
+        "op_code": "0x7bdd97de",
+        "body": [
+          {
+            "name": "query_id",
+            "tlb_type": "## 64",
+            "format": "uint64"
+          },
+          {
+            "name": "amount",
+            "tlb_type": "coins",
+            "format": "coins"
+          },
+          {
+            "name": "owner",
+            "tlb_type": "addr",
+            "format": "addr"
+          },
+          {
+            "name": "response_destination",
+            "tlb_type": "maybe addr",
+            "format": "addr"
+          }
+        ]
+      }
+    ],
+    "out_messages": [
+      {
+        "op_name": "DeployEmitEvent",
+        "op_code": "0x67617300",
+        "type": "external_out",
+        "body": [
+          {
+            "name": "from",
+            "tlb_type": "addr",
+            "format": "addr"
+          }
+        ]
+      },
+      {
+        "op_name": "BuyEmitEvent",
+        "op_code": "0x67617302",
+        "type": "external_out",
+        "body": [
+          {
+            "name": "from",
+            "tlb_type": "addr",
+            "format": "addr"
+          },
+          {
+            "name": "input_ton_amount",
+            "tlb_type": "coins",
+            "format": "coins"
+          },
+          {
+            "name": "ton_amount",
+            "tlb_type": "coins",
+            "format": "coins"
+          },
+          {
+            "name": "jetton_amount",
+            "tlb_type": "coins",
+            "format": "coins"
+          },
+          {
+            "name": "fee_ton_amount",
+            "tlb_type": "coins",
+            "format": "coins"
+          },
+          {
+            "name": "bonding_curve_overflow",
+            "tlb_type": "bool",
+            "format": "bool"
+          }
+        ]
+      },
+      {
+        "op_name": "SellEmitEvent",
+        "op_code": "0x67617303",
+        "type": "external_out",
+        "body": [
+          {
+            "name": "from",
+            "tlb_type": "addr",
+            "format": "addr"
+          },
+          {
+            "name": "ton_amount",
+            "tlb_type": "coins",
+            "format": "coins"
+          },
+          {
+            "name": "jetton_amount",
+            "tlb_type": "coins",
+            "format": "coins"
+          },
+          {
+            "name": "fee_ton_amount",
+            "tlb_type": "coins",
+            "format": "coins"
+          }
+        ]
+      }
+    ]
+  }
+]
