@@ -107,7 +107,7 @@ func (s *Service) ParseAccountData(
 	}
 	acc.ExecutedGetMethods = map[abi.ContractName][]abi.GetMethodExecution{}
 
-	s.callPossibleGetMethods(ctx, acc, others, interfaces)
+	s.CallPossibleGetMethods(ctx, acc, others, interfaces)
 
 	return nil
 }
@@ -141,7 +141,7 @@ func (s *Service) ParseAccountContractData(
 	}
 	delete(acc.ExecutedGetMethods, contractDesc.Name)
 
-	s.callPossibleGetMethods(ctx, acc, others, []*core.ContractInterface{contractDesc})
+	s.CallPossibleGetMethods(ctx, acc, others, []*core.ContractInterface{contractDesc})
 
 	return nil
 }
